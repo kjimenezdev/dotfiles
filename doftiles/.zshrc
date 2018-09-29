@@ -290,6 +290,25 @@ function chata(){
   fortune | cowsay -f $(ls /usr/share/cowsay/cows/ | shuf -n1) | lolcat
 }
 
+ # Git functions
+ function gadd() {
+  git add .
+}
+
+# GIT: push current branch from origin to current branch
+function push() {
+  local current_branch="$(git rev-parse --abbrev-ref HEAD)"
+  git push -u origin "$current_branch"
+}
+
+# GIT: pull current branch from origin to current branch
+function pull() {
+  local current_branch="$(git rev-parse --abbrev-ref HEAD)"
+  git pull origin "$current_branch"
+}
+
+
+
 # }}}
 # Exported variable: LS_COLORS --- {{{
 
@@ -529,6 +548,15 @@ alias reload="source ~/.zshrc"
 alias confter="sudo dpkg-reconfigure console-setup"
 alias alacredit="f ~/.config/alacritty/alacritty.yml"
 alias t="tmux"
+alias dotfiles="cd ~/.dotfiles"
+
+# Git
+alias g='git status'
+alias gl='git branch --verbose --all'
+alias gm='git commit --verbose'
+alias gma='git add --all && git commit --verbose'
+alias gp='git remote prune origin'
+alias gd='git diff'
 
 # }}}
 # Plugins --- {{{
