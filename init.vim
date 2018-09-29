@@ -34,7 +34,7 @@ let mapleader = ","
 let maplocalleader = "\\"
 
 " }}}
-" General: global config ------------ {{{
+"General: Global config ------------ {{{
 
 "A comma separated list of options for Insert mode completion
 "   menuone  Use the popup menu also when there is only one match.
@@ -61,10 +61,6 @@ set mouse=a
 " SwapFiles: prevent creation
 set nobackup
 set noswapfile
-
-" Avoid wrapping lines
-set nowrap
-
 " Set column to light grey at 80 characters
 if (exists('+colorcolumn'))
   set colorcolumn=80
@@ -100,26 +96,13 @@ set exrc
 " Make sure numbering is set
 set number
 
-" Split settings (splitright , split below
-set splitright
-
-" Avoid using set paste
-set pastetoggle=<c-_>
-
-" Make terminal zsh
-set shell=/user/bin/zsh
+" Change line number highlight color
+" highlight LineNr guibg=red
 
 " Redraw window whenever I've regained focus
 augroup redraw_on_refocus
   au FocusGained * :redraw!
 augroup END
-
-" Useful copy and paste mappings
-" vmap <C-c> "+yi
-" vmap <C-x> "+c
-" vmap <C-v> c<ESC>"+p
-" imap <C-v> <ESC>"+pa
-"
 
 " }}}
 " General: Plugin Install --------------------- {{{
@@ -131,6 +114,7 @@ Plug 'fcpg/vim-altscreen'
 
 " Basic coloring
 Plug 'itchyny/lightline.vim'
+Plug 'ErichDonGubler/vim-sublime-monokai'
 Plug 'NLKNguyen/papercolor-theme'
 
 " Utils
@@ -165,17 +149,7 @@ Plug 'mxw/vim-jsx'
 Plug 'sukima/xmledit'
 Plug 'alvan/vim-closetag'
 
-
 call plug#end()
-
-" }}}
-" General: Filetype specification ---------- {{{
-
-augroup filetype_recognition
-  autocmd!
-  autocmd BufNewFile,BufRead,BufEnter *.jsx set filetype=javascript.jsx
-augroup END
-
 
 " }}}
 " General: Indentation (tabs, spaces, width, etc)------------- {{{
@@ -186,7 +160,6 @@ augroup indentation_sr
   autocmd Filetype python setlocal shiftwidth=4 softtabstop=4 tabstop=8
   autocmd Filetype yaml setlocal indentkeys-=<:>
   autocmd Filetype make setlocal tabstop=4 softtabstop=0 shiftwidth=4 noexpandtab
-
 augroup END
 
 " }}}
@@ -195,13 +168,10 @@ augroup END
 augroup fold_settings
   autocmd!
   autocmd FileType vim setlocal foldmethod=marker
+  autocmd FileType zsh setlocal foldmethod=marker foldlevelstart=0
   autocmd FileType vim setlocal foldlevelstart=0
   autocmd FileType * setlocal foldnestmax=1
 augroup END
-
-" Set folding settings
-" set foldmethod=indent
-" set foldlevel=99
 
 " }}}
 " General: Trailing whitespace ------------- {{{
@@ -231,8 +201,45 @@ augroup fix_whitespace_save
   autocmd BufWritePre * call TrimWhitespace()
 augroup END
 
-" Avoids whitespace issues
-" augroup BufRead,BufNewFile,*.py,*.pyw,*.c,*.h match BadWhitespace /\s\+$/
+" }}}
+" General: Syntax highlighting ---------------- {{{
+
+" Papercolor: options
+let g:PaperColor_Theme_Options = {}
+let g:PaperColor_Theme_Options['theme'] = {
+      \     'default': {
+      \       'transparent_background': 1
+      \     }
+      \ }
+let g:PaperColor_Theme_Options['language'] = {
+      \     'python': {
+      \       'highlight_builtins' : 1
+      \     },
+      \     'cpp': {
+      \       'highlight_standard_library': 1
+      \     },
+      \     'c': {
+      \       'highlight_builtins' : 1
+      \     }
+      \ }
+
+" Python: Highlight self and cls keyword in class definitions
+augroup python_syntax
+  autocmd!
+  autocmd FileType python syn keyword pythonBuiltinObj self
+  autocmd FileType python syn keyword pythonBuiltinObj cls
+augroup end
+
+" Syntax: select global syntax scheme
+" Make sure this is at end of section
+try
+  set t_Co=256 " says terminal has 256 colors
+  set background=dark
+  syntax on
+  " colorscheme sublimemonokai
+  colorscheme PaperColor
+catch
+endtry
 
 " }}}
 "  Plugin: Configure ------------ {{{
@@ -246,19 +253,6 @@ let g:python_highlight_all = 1
 
 " Put your key remappings here
 " Prefer nnoremap to nmap, inoremap to imap, and vnoremap to vmap
-
-" inoremap " ""<left>
-" inoremap ' ''<left>
-" inoremap ( ()<left>
-" inoremap [ []<left>
-" inoremap { {}<left>
-" inoremap {<CR> {<CR>}<ESC>O
-" inoremap {;<CR> {<CR>};<ESC>O
-
-" inoremap <BS>'b
-" create a mapping to erase the whole '' when erase one '
-" create a mapping to erase add the '' surround a word to 'string' it
-
 " Save: allows saving easily
 :nnoremap <c-s> <esc>:w<CR>
 
@@ -277,19 +271,6 @@ nnoremap <space> za
 :nnoremap <c-k> <c-w>k
 :nnoremap <c-l> <c-w>l
 
-" MoveTabs: moving forward, backward, and to number with vim tabs
-" nnoremap <silent> L gt
-" nnoremap <silent> H gT
-" nnoremap <A-1> 1gt
-" nnoremap <A-2> 2gt
-" nnoremap <A-3> 3gt
-" nnoremap <A-4> 4gt
-" nnoremap <A-5> 5gt
-" nnoremap <A-6> 6gt
-" nnoremap <A-7> 7gt
-" nnoremap <A-8> 8gt
-" nnoremap <A-9> 9gt
-
 " ToggleRelativeNumber: uses custom functions
 nnoremap <silent><leader>r :NumbersToggle<CR>
 
@@ -302,10 +283,6 @@ nnoremap <silent> <space>u :UndotreeToggle
 " Exiting: allows to get out from files easily
 nnoremap <c-q> <esc>:q<CR>
 nnoremap <c-w> <esc>:wq<CR>
-
-" Multiline Editing: shortcut to allow editing multiple lines at once
-nnoremap <c-t> <esc>vip<c-n>i
-
 
 " }}}
 " General: Cleanup ------------------ {{{
@@ -320,22 +297,6 @@ set secure
 set noshowcmd
 
 " }}}
-"  Plugin: Startify ------------- {{{
-
-let g:startify_list_order = []
-let g:startify_fortune_use_unicode = 1
-let g:startify_enable_special = 1
-let g:startify_custom_header = []
-let g:startify_custom_footer = [
-      \' _                                _',
-      \'| | __ ___  _ __  _ __  __ _   __| |',
-      \'| |/ / _ \ |    \| __/ /  ` | / _` |',
-      \'|   < (_)  | | | | |  | (_| || (_| |',
-      \'|_|\_\___/ |_| |_|_|   \__,_| \__,_|',
-      \'',
-      \] + map(startify#fortune#boxed(), {idx, val -> '$$$ ' . val})
-
-"  }}}
 "  Plugin: Vim CloseTag   ------------- {{{
 
 " filenames like *.xml, *.html, *.xhtml, ...
@@ -372,3 +333,67 @@ let g:closetag_shortcut = '>'
 let g:closetag_close_shortcut = '<leader>>'
 
 "  }}}
+"  Plugin: Startify ------------- {{{
+
+let g:startify_list_order = []
+let g:startify_fortune_use_unicode = 1
+let g:startify_enable_special = 1
+let g:startify_custom_header = []
+let g:startify_custom_footer = [
+      \' _                                _',
+      \'| | __ __   _ __  _ __  __ _   __| |',
+      \'| |/ / _ \ |    \| __/ /  ` | / _` |',
+      \'|   < (_)  | | | | |  | (_| || (_| |',
+      \'|_|\_\___/ |_| |_|_|   \__,_| \__,_|',
+      \'',
+      \] + map(startify#fortune#cowsay(), {idx, val -> '' . val})
+
+"  }}}
+"  Plugin: Plugin Configure ------------- {{{
+"
+" Python:
+" Open module, e.g. :Pyimport os (opens the os module)
+let g:jedi#popup_on_dot = 0
+let g:jedi#show_call_signatures = 0
+let g:jedi#auto_close_doc = 0
+let g:jedi#smart_auto_mappings = 0
+let g:jedi#force_py_version = 3
+
+" mappings
+" auto_vim_configuration creates space between where vim is opened and
+" closed in my bash terminal. This is annoying, so I disable and manually
+" configure. See 'set completeopt' in my global config for my settings
+let g:jedi#auto_vim_configuration = 0
+let g:jedi#goto_command = "<C-]>"
+let g:jedi#documentation_command = "<leader>sd"
+let g:jedi#usages_command = "<leader>su"
+let g:jedi#rename_command = "<leader>sr"
+"  }}}
+" General: Filetype specification ------------ {{{
+
+augroup filetype_recognition
+  autocmd!
+  autocmd BufNewFile,BufRead,BufEnter *.hql,*.q set filetype=hive
+  autocmd BufNewFile,BufRead,BufEnter *.config set filetype=yaml
+  autocmd BufNewFile,BufRead,BufEnter *.bowerrc,*.babelrc,*.eslintrc,*.slack-term
+        \ set filetype=json
+  autocmd BufNewFile,BufRead,BufEnter *.handlebars set filetype=html
+  autocmd BufNewFile,BufRead,BufEnter *.m,*.oct set filetype=octave
+  autocmd BufNewFile,BufRead,BufEnter *.jsx set filetype=javascript.jsx
+  autocmd BufNewFile,BufRead,BufEnter *.gs set filetype=javascript
+  autocmd BufNewFile,BufRead,BufEnter *.cfg,*.ini,.coveragerc,.pylintrc
+        \ set filetype=dosini
+  autocmd BufNewFile,BufRead,BufEnter *.tsv set filetype=tsv
+  autocmd BufNewFile,BufRead,BufEnter Dockerfile.* set filetype=Dockerfile
+  autocmd BufNewFile,BufRead,BufEnter Makefile.* set filetype=make
+augroup END
+
+augroup filetype_vim
+  autocmd!
+  autocmd BufWritePost *vimrc so $MYVIMRC |
+        \if has('gui_running') |
+        \so $MYGVIMRC |
+        \endif
+augroup END
+
+" }}}
