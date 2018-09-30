@@ -2,7 +2,7 @@
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH="/home/kjimenez/.oh-my-zsh"
+export ZSH="$HOME/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -287,7 +287,8 @@ function dat(){
 }
 
 function chata(){
-  fortune | cowsay -f $(ls /usr/share/cowsay/cows/ | shuf -n1) | lolcat
+  fortune | cowsay -f $(ls /usr/local/Cellar/cowsay/3.04/share/cows/ | gshuf -n1) | lolcat
+  # fortune | cowsay -f $(ls /usr/share/cowsay/cows/ | gshuf -n1) | lolcat
 }
 
  # Git functions
