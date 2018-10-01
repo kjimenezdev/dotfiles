@@ -125,9 +125,12 @@ Plug 'jiangmiao/auto-pairs'
 Plug 'christoomey/vim-system-copy'
 Plug 'mhinz/vim-startify'
 Plug 'terryma/vim-multiple-cursors'
+Plug 'simeji/winresizer'
 
 " Language-specific syntax
 Plug 'hdima/python-syntax'
+Plug 'leafgarland/typescript-vim'
+Plug 'magicalbanana/sql-syntax-vim'
 
 " Extensions for markdown
 Plug 'majutsushi/tagbar'
@@ -148,6 +151,20 @@ Plug 'davidhalter/jedi-vim'
 Plug 'mxw/vim-jsx'
 Plug 'sukima/xmledit'
 Plug 'alvan/vim-closetag'
+Plug 'Quramy/tsuquyomi'
+
+" Android
+Plug 'hsanson/vim-android'
+
+" Javascript
+Plug 'pangloss/vim-javascript'
+
+" Indentation-only
+Plug 'hynek/vim-python-pep8-indent'
+Plug 'Yggdroot/indentLine'
+
+" CSS coloring
+Plug 'ap/vim-css-color'
 
 call plug#end()
 
@@ -277,12 +294,14 @@ nnoremap <silent><leader>r :NumbersToggle<CR>
 " TogglePluginWindows:
 nnoremap <silent> <space>j :NERDTreeToggle<CR>
 nnoremap <silent> <space>J :call NERDTreeToggleCustom()<CR>
-nnoremap <silent> <space>l :TagbarToggle <CR>
-nnoremap <silent> <space>u :UndotreeToggle
 
 " Exiting: allows to get out from files easily
 nnoremap <c-q> <esc>:q<CR>
 nnoremap <c-w> <esc>:wq<CR>
+
+" Resizing: allows to resize vim panes
+nnoremap <leader>l :vertical resize+5<CR>
+nnoremap <leader>h :vertical resize-5<CR>
 
 " }}}
 " General: Cleanup ------------------ {{{
@@ -368,6 +387,23 @@ let g:jedi#goto_command = "<C-]>"
 let g:jedi#documentation_command = "<leader>sd"
 let g:jedi#usages_command = "<leader>su"
 let g:jedi#rename_command = "<leader>sr"
+
+" VimJavascript:
+let g:javascript_plugin_flow = 1
+
+" JSX: for .js files in addition to .jsx
+let g:jsx_ext_required = 0
+
+" JsDoc:
+let g:jsdoc_enable_es6 = 1
+
+" AutoPEP8:
+let g:autopep8_disable_show_diff = 1
+
+" IndentLines:
+let g:indentLine_enabled = 0  " indentlines disabled by default
+
+
 "  }}}
 " General: Filetype specification ------------ {{{
 

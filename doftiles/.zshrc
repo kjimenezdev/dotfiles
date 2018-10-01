@@ -308,7 +308,23 @@ function pull() {
   git pull origin "$current_branch"
 }
 
+# Creates a simple new flask proyect
+function flasknew(){
+}
 
+# Creates a simple new flask backend
+function flaskbackend(){
+}
+
+
+# Easy way to call ssh
+function zssh(){
+  if [ $# -ne 2 ]; then
+    echo "zzsh <key> <server>"
+    return 1
+  fi
+  ssh -i ~/.$1 $2
+}
 
 # }}}
 # Exported variable: LS_COLORS --- {{{
@@ -544,7 +560,7 @@ alias m="man"
 alias s="ls"
 alias sl="ls"
 alias ks="ls"
-alias tmuxedit="vim ~/.tmux.conf"
+alias tedit="vim ~/.tmux.conf"
 alias reload="source ~/.zshrc"
 alias confter="sudo dpkg-reconfigure console-setup"
 alias alacredit="f ~/.config/alacritty/alacritty.yml"
@@ -558,6 +574,8 @@ alias gm='git commit --verbose'
 alias gma='git add --all && git commit --verbose'
 alias gp='git remote prune origin'
 alias gd='git diff'
+
+alias p="pass"
 
 # }}}
 # Plugins --- {{{
@@ -573,6 +591,8 @@ if [ -f ~/.zplug/init.zsh ]; then
   zplug "zsh-users/zsh-completions", as:plugin
   zplug "zsh-users/zsh-syntax-highlighting", as:plugin
   zplug "nobeans/zsh-sdkman", as:plugin
+  zplug "zpm-zsh/mysql-colorize", as:plugin
+  zplug "voronkovich/mysql.plugin.zsh", as:plugin
   zplug "junegunn/fzf-bin", \
     from:gh-r, \
     as:command, \
