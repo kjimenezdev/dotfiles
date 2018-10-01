@@ -264,7 +264,7 @@ function vd() {
 
 # create a make file
 function mknew(){
-cat > Makefile <<EOL
+  cat > Makefile <<EOL
 SHELL=/bin/bash
 
 .PHONY: default
@@ -287,12 +287,15 @@ function dat(){
 }
 
 function chata(){
-  fortune | cowsay -f $(ls /usr/local/Cellar/cowsay/3.04/share/cows/ | gshuf -n1) | lolcat
-  # fortune | cowsay -f $(ls /usr/share/cowsay/cows/ | gshuf -n1) | lolcat
+  if [ "$(uname 2> /dev/null)" != "Linux" ]; then
+    fortune | cowsay -f $(ls /usr/local/Cellar/cowsay/3.04/share/cows/ | gshuf -n1) | lolcat
+  else
+    fortune | cowsay -f $(ls /usr/share/cowsay/cows/ | shuf -n1) | lolcat
+  fi
 }
 
- # Git functions
- function gadd() {
+# Git functions
+function gadd() {
   git add .
 }
 
@@ -576,7 +579,7 @@ alias gp='git remote prune origin'
 alias gd='git diff'
 
 alias p="pass"
-
+alias dotfiles="cd ~/dotfiles"
 # }}}
 # Plugins --- {{{
 
