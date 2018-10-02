@@ -283,14 +283,15 @@ function dat(){
     return 1
   fi
   local file_name="$1"
-  sudo strfile -c % "$file_name" "$file_name.dat"
+  strfile -c % "$file_name" "$file_name.dat"
 }
 
 function chata(){
-  if [ "$(uname 2> /dev/null)" != "Linux" ]; then
-    fortune | cowsay -f $(ls /usr/local/Cellar/cowsay/3.04/share/cows/ | gshuf -n1) | lolcat
+ local cowsay_quote="$(fortune -s ~/.fortunes/)"
+ if [ "$(uname 2> /dev/null)" != "Linux" ]; then
+    echo -e "$cowsay_quote" | cowsay -f $(ls /usr/local/Cellar/cowsay/3.04/share/cows/ | gshuf -n1) | lolcat
   else
-    fortune | cowsay -f $(ls /usr/share/cowsay/cows/ | shuf -n1) | lolcat
+    echo -e "$cowsay_quote" | cowsay -f $(ls /usr/share/cowsay/cows/ | shuf -n1) | lolcat
   fi
 }
 
@@ -313,10 +314,158 @@ function pull() {
 
 # Creates a simple new flask proyect
 function flasknew(){
+  if [ $# -ne 1 ]; then
+    echo "flasknew <project_name>"
+    return 1
+  fi
+  local proj_name="$1"
+  mkdir "$proj_name"
+  cd "$proj_name"
+  git init
+
+  mkdir instance
+  cat > instance/.gitignore <<EOL
+*
+!.gitignore
+EOL
+
+ve
+pip install -U Flask
+
+# .gitignore
+cat > .gitignore <<EOL
+# Python
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+.tox/
+.cache
+.coverage
+docs/_build/
+*.egg-info/
+.installed.cfg
+*.egg
+.mypy_cache/
+.pytest_cache/
+*.coverage*
+# Vim
+*.swp
+# C
+*.so
+EOL
+
+# Creates __init__.py file
+cat > $proj_name.py <<EOL
+#!/usr/bin/env python
+"""Basic Flask app"""
+
+from flask import Flask
+
+def create_app():
+    """Initializes the flask app"""
+    app = Flask(__name__, static_url_path="")
+    return app
+
+if __name__ == "__main__":
+    FLASK_APP = create_app()
+    FLASK_APP.run(host="0.0.0.0", port=80)
+
+EOL
+chmod +x $proj_name.py
+
+# Creates the runnable script that exports the flags to run the flask app
+cat > run.sh <<EOL
+# Runs the flask app
+export FLASK_APP=$proj_name
+export FLASK_DEBUG=1
+export FLASK_ENV=development
+flask run
+
+EOL
+chmod +x run.sh
+
 }
 
+
 # Creates a simple new flask backend
+# uses SQLAlachemy
 function flaskbackend(){
+  if [ $# -ne 1 ]; then
+    echo "flasknew <project_name>"
+    return 1
+  fi
+  local proj_name="$1"
+  mkdir "$proj_name"
+  cd "$proj_name"
+  git init
+
+  mkdir instance
+  cat > instance/.gitignore <<EOL
+*
+!.gitignore
+EOL
+
+ve
+pip install -U Flask
+
+# .gitignore
+cat > .gitignore <<EOL
+# Python
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+.tox/
+.cache
+.coverage
+docs/_build/
+*.egg-info/
+.installed.cfg
+*.egg
+.mypy_cache/
+.pytest_cache/
+*.coverage*
+# Vim
+*.swp
+# C
+*.so
+EOL
+
+# Creates __init__.py file
+cat > $proj_name.py <<EOL
+#!/usr/bin/env python
+"""Basic Flask app"""
+
+from flask import Flask
+
+def create_app():
+    """Initializes the flask app"""
+    app = Flask(__name__, static_url_path="")
+    return app
+
+if __name__ == "__main__":
+    FLASK_APP = create_app()
+    FLASK_APP.run(host="0.0.0.0", port=80)
+
+EOL
+chmod +x $proj_name.py
+
+# Creates the runnable script that exports the flags to run the flask app
+cat > run.sh <<EOL
+# Runs the flask app
+export FLASK_APP=$proj_name
+export FLASK_DEBUG=1
+export FLASK_ENV=development
+flask run
+
+EOL
+chmod +x run.sh
+
+  # Creates structure directories
+  mkdir models
+  mkdir routes
+  mkdir utils
 }
 
 
@@ -328,6 +477,13 @@ function zssh(){
   fi
   ssh -i ~/.$1 $2
 }
+
+# Uses Cowsay from a custom list of words
+function quote() {
+  local cowsay_quote="$(fortune -s ~/.fortunes/ | grep -v '\-\-' | grep .)"
+  echo -e "$cowsay_quote" | cowsay
+}
+
 
 # }}}
 # Exported variable: LS_COLORS --- {{{
@@ -522,7 +678,6 @@ alias pbcopy="perl -pe 'chomp if eof' | xsel --clipboard --input"
 alias pbpaste="xsel --clipboard --output"
 
 # Useful aliases
-alias activate="source venv/bin/activate"
 alias zshconfig="vim ~/.zshrc"
 alias zshrc="vim ~/.zshrc"
 alias ohmyzsh="vim ~/.oh-my-zsh"
@@ -531,7 +686,6 @@ alias vimrc="vim ~/.config/nvim/init.vim"
 alias zshedit="vim ~/.zshrc"
 
 # Handy shortcuts
-alias trivia="cd $HOME/proyect/trivia && activate"
 
 # Vim and vi
 alias f="vim"
@@ -558,6 +712,7 @@ alias .="cd .."
 alias ..="cd ../../"
 alias ...="cd ../../../"
 alias ....="cd ../../../../"
+alias .....="cd ../../../../../"
 
 alias m="man"
 alias s="ls"

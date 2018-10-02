@@ -297,11 +297,14 @@ nnoremap <silent> <space>J :call NERDTreeToggleCustom()<CR>
 
 " Exiting: allows to get out from files easily
 nnoremap <c-q> <esc>:q<CR>
-nnoremap <c-w> <esc>:wq<CR>
 
 " Resizing: allows to resize vim panes
 nnoremap <leader>l :vertical resize+5<CR>
 nnoremap <leader>h :vertical resize-5<CR>
+
+" ResizeWindow: up and down; relies on custom functions
+nnoremap <silent> <leader><leader>h mz:call ResizeWindowHeight()<CR>`z
+nnoremap <silent> <leader><leader>w mz:call ResizeWindowWidth()<CR>`z
 
 " }}}
 " General: Cleanup ------------------ {{{
@@ -403,6 +406,10 @@ let g:autopep8_disable_show_diff = 1
 " IndentLines:
 let g:indentLine_enabled = 0  " indentlines disabled by default
 
+" WinResize:
+let g:winresizer_start_key = '<C-\>'
+let g:winresizer_vert_resize = 1
+let g:winresizer_horiz_resize = 1
 
 "  }}}
 " General: Filetype specification ------------ {{{
@@ -431,5 +438,46 @@ augroup filetype_vim
         \so $MYGVIMRC |
         \endif
 augroup END
+
+" }}}
+" General: Resize Window --- {{{
+
+" WindowWidth: Resize window to a couple more than longest line
+" modified function from:
+" https://stackoverflow.com/questions/2075276/longest-line-in-vim
+function! ResizeWindowWidth()
+  let maxlength   = 0
+  let linenumber  = 1
+  while linenumber <= line("$")
+    exe ":" . linenumber
+    let linelength  = virtcol("$")
+    if maxlength < linelength
+      let maxlength = linelength
+    endif
+    let linenumber  = linenumber+1
+  endwhile
+  exe ":vertical resize " . (maxlength + 4)
+endfunction
+
+function! ResizeWindowHeight()
+  let initial = winnr()
+
+  " this duplicates code but avoids polluting global namespace
+  wincmd k
+  if winnr() != initial
+    exe initial . "wincmd w"
+    exe ":1"
+    exe "resize " . (line('$') + 1)
+    return
+  endif
+
+  wincmd j
+  if winnr() != initial
+    exe initial . "wincmd w"
+    exe ":1"
+    exe "resize " . (line('$') + 1)
+    return
+  endif
+endfunction
 
 " }}}
