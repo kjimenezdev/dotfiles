@@ -1,6 +1,7 @@
 " General: Notes
 "
 " Author: Samuel Roeca
+" Maintainer: Konrad Jimenez
 " Date: August 15, 2017
 " TLDR: vimrc minimum viable product for Python programming
 "
@@ -119,7 +120,7 @@ Plug 'NLKNguyen/papercolor-theme'
 
 " Utils
 Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-surround'
+" Plug 'tpope/vim-surround'
 Plug 'myusuf3/numbers.vim'
 Plug 'jiangmiao/auto-pairs'
 Plug 'christoomey/vim-system-copy'
@@ -131,6 +132,8 @@ Plug 'simeji/winresizer'
 Plug 'hdima/python-syntax'
 Plug 'leafgarland/typescript-vim'
 Plug 'magicalbanana/sql-syntax-vim'
+Plug 'mxw/vim-jsx'
+Plug 'sukima/xmledit'
 
 " Extensions for markdown
 Plug 'majutsushi/tagbar'
@@ -141,17 +144,21 @@ Plug 'hynek/vim-python-pep8-indent'
 
 " NerdTree
 Plug 'scrooloose/nerdtree'
+
+" NerdTree git plugin
 Plug 'Xuyuanp/nerdtree-git-plugin'
 
 " Preview
 Plug 'tyru/open-browser.vim'
 
-" Autocompletion
+" Python auto-completion
 Plug 'davidhalter/jedi-vim'
-Plug 'mxw/vim-jsx'
-Plug 'sukima/xmledit'
-Plug 'alvan/vim-closetag'
+
+" Typescript autoimports
 Plug 'Quramy/tsuquyomi'
+
+" Autocomplete html tags
+Plug 'alvan/vim-closetag'
 
 " Android
 Plug 'hsanson/vim-android'
@@ -159,12 +166,31 @@ Plug 'hsanson/vim-android'
 " Javascript
 Plug 'pangloss/vim-javascript'
 
-" Indentation-only
+" Python Indentation
 Plug 'hynek/vim-python-pep8-indent'
+
+" Intentline
 Plug 'Yggdroot/indentLine'
 
 " CSS coloring
 Plug 'ap/vim-css-color'
+
+" Choosewin
+Plug 't9md/vim-choosewin'
+
+" Vim sandwich
+Plug 'machakann/vim-sandwich'
+
+" Bullets
+Plug 'dkarter/bullets.vim'
+
+" Abolish
+Plug 'tpope/vim-abolish'
+
+" YouCompleteMe
+Plug 'Valloric/YouCompleteMe'
+
+Plug 'Shougo/vimproc.vim'
 
 call plug#end()
 
@@ -189,6 +215,17 @@ augroup fold_settings
   autocmd FileType vim setlocal foldlevelstart=0
   autocmd FileType * setlocal foldnestmax=1
 augroup END
+
+augroup javascript_folding
+    au!
+    au FileType javascript setlocal foldmethod=syntax
+augroup END
+
+" augroup typescript_folding
+"     au!
+"     au FileType typescript setlocal foldmethod=syntax
+" augroup END
+
 
 " }}}
 " General: Trailing whitespace ------------- {{{
@@ -294,6 +331,7 @@ nnoremap <silent><leader>r :NumbersToggle<CR>
 " TogglePluginWindows:
 nnoremap <silent> <space>j :NERDTreeToggle<CR>
 nnoremap <silent> <space>J :call NERDTreeToggleCustom()<CR>
+nnoremap <silent> <space>u :UndotreeToggle<CR>
 
 " Exiting: allows to get out from files easily
 nnoremap <c-q> <esc>:q<CR>
@@ -305,6 +343,16 @@ nnoremap <leader>h :vertical resize-5<CR>
 " ResizeWindow: up and down; relies on custom functions
 nnoremap <silent> <leader><leader>h mz:call ResizeWindowHeight()<CR>`z
 nnoremap <silent> <leader><leader>w mz:call ResizeWindowWidth()<CR>`z
+
+" Tagbar
+nnoremap <silent> <space>l :TagbarToggle <CR>
+
+" Choosewin
+nnoremap <leader>q :ChooseWin<CR>
+
+" PlugInstall
+nnoremap <leader>p :PlugInstall<CR>
+nnoremap <leader>c :PlugClean<CR>
 
 " }}}
 " General: Cleanup ------------------ {{{
@@ -411,6 +459,21 @@ let g:winresizer_start_key = '<C-\>'
 let g:winresizer_vert_resize = 1
 let g:winresizer_horiz_resize = 1
 
+" Bullets
+let g:bullets_enabled_file_types = [
+    \ 'markdown',
+    \ 'text',
+    \ 'gitcommit',
+    \ 'scratch'
+    \]
+
+" Typescript
+let g:typescript_compiler_binary = 'tsc'
+let g:typescript_compiler_options = ''
+autocmd QuickFixCmdPost [^l]* nested cwindow
+autocmd QuickFixCmdPost    l* nested lwindow
+
+
 "  }}}
 " General: Filetype specification ------------ {{{
 
@@ -480,4 +543,47 @@ function! ResizeWindowHeight()
   endif
 endfunction
 
+" }}}
+"  Plugin: Tagbar ------ {{{
+
+let g:tagbar_map_showproto = '`'
+let g:tagbar_show_linenumbers = -1
+let g:tagbar_autofocus = 1
+let g:tagbar_indent = 1
+let g:tagbar_sort = 0  " order by order in sort file
+let g:tagbar_case_insensitive = 1
+let g:tagbar_width = 37
+let g:tagbar_silent = 1
+let g:tagbar_foldlevel = 0
+let g:tagbar_type_haskell = {
+    \ 'ctagsbin'  : 'hasktags',
+    \ 'ctagsargs' : '-x -c -o-',
+    \ 'kinds'     : [
+        \  'm:modules:0:1',
+        \  'd:data: 0:1',
+        \  'd_gadt: data gadt:0:1',
+        \  't:type names:0:1',
+        \  'nt:new types:0:1',
+        \  'c:classes:0:1',
+        \  'cons:constructors:1:1',
+        \  'c_gadt:constructor gadt:1:1',
+        \  'c_a:constructor accessors:1:1',
+        \  'ft:function types:1:1',
+        \  'fi:function implementations:0:1',
+        \  'o:others:0:1'
+    \ ],
+    \ 'sro'        : '.',
+    \ 'kind2scope' : {
+        \ 'm' : 'module',
+        \ 'c' : 'class',
+        \ 'd' : 'data',
+        \ 't' : 'type'
+    \ },
+    \ 'scope2kind' : {
+        \ 'module' : 'm',
+        \ 'class'  : 'c',
+        \ 'data'   : 'd',
+        \ 'type'   : 't'
+    \ }
+\ }
 " }}}

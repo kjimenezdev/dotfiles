@@ -287,7 +287,7 @@ function dat(){
 }
 
 function chata(){
- local cowsay_quote="$(fortune -s ~/.fortunes/)"
+ local cowsay_quote="$(fortune -s ~/dotfiles/dotfiles/fortunes)"
  if [ "$(uname 2> /dev/null)" != "Linux" ]; then
     echo -e "$cowsay_quote" | cowsay -f $(ls /usr/local/Cellar/cowsay/3.04/share/cows/ | gshuf -n1) | lolcat
   else
@@ -475,12 +475,12 @@ function zssh(){
     echo "zzsh <key> <server>"
     return 1
   fi
-  ssh -i ~/.$1 $2
+  ssh -i ~/.ssh/$1 root@$2
 }
 
 # Uses Cowsay from a custom list of words
 function quote() {
-  local cowsay_quote="$(fortune -s ~/.fortunes/ | grep -v '\-\-' | grep .)"
+  local cowsay_quote="$(fortune | grep -v '\-\-' | grep .)"
   echo -e "$cowsay_quote" | cowsay
 }
 
@@ -647,7 +647,7 @@ include ~/.bash/sensitive
 # turn off ctrl-s and ctrl-q from freezing / unfreezing terminal
 
 stty -ixon
-chata
+# chata
 # fortune | cowsay -f $(ls /usr/share/cowsay/cows/ | shuf -n1) | lolcat
 
 # }}}
@@ -732,9 +732,14 @@ alias gm='git commit --verbose'
 alias gma='git add --all && git commit --verbose'
 alias gp='git remote prune origin'
 alias gd='git diff'
+alias gcim='git commit -m'
 
 alias p="pass"
 alias dotfiles="cd ~/dotfiles"
+
+# NPM
+alias ns="npm start"
+
 # }}}
 # Plugins --- {{{
 
