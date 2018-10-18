@@ -2,7 +2,7 @@
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH="/home/kjimenez/.oh-my-zsh"
+export ZSH="$HOME/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -264,7 +264,7 @@ function vd() {
 
 # create a make file
 function mknew(){
-cat > Makefile <<EOL
+  cat > Makefile <<EOL
 SHELL=/bin/bash
 
 .PHONY: default
@@ -283,15 +283,20 @@ function dat(){
     return 1
   fi
   local file_name="$1"
-  sudo strfile -c % "$file_name" "$file_name.dat"
+  strfile -c % "$file_name" "$file_name.dat"
 }
 
 function chata(){
-  fortune | cowsay -f $(ls /usr/share/cowsay/cows/ | shuf -n1) | lolcat
+ local cowsay_quote="$(fortune -s ~/dotfiles/dotfiles/fortunes)"
+ if [ "$(uname 2> /dev/null)" != "Linux" ]; then
+    echo -e "$cowsay_quote" | cowsay -f $(ls /usr/local/Cellar/cowsay/3.04/share/cows/ | gshuf -n1) | lolcat
+  else
+    echo -e "$cowsay_quote" | cowsay -f $(ls /usr/share/cowsay/cows/ | shuf -n1) | lolcat
+  fi
 }
 
- # Git functions
- function gadd() {
+# Git functions
+function gadd() {
   git add .
 }
 
@@ -307,6 +312,177 @@ function pull() {
   git pull origin "$current_branch"
 }
 
+# Creates a simple new flask proyect
+function flasknew(){
+  if [ $# -ne 1 ]; then
+    echo "flasknew <project_name>"
+    return 1
+  fi
+  local proj_name="$1"
+  mkdir "$proj_name"
+  cd "$proj_name"
+  git init
+
+  mkdir instance
+  cat > instance/.gitignore <<EOL
+*
+!.gitignore
+EOL
+
+ve
+pip install -U Flask
+
+# .gitignore
+cat > .gitignore <<EOL
+# Python
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+.tox/
+.cache
+.coverage
+docs/_build/
+*.egg-info/
+.installed.cfg
+*.egg
+.mypy_cache/
+.pytest_cache/
+*.coverage*
+# Vim
+*.swp
+# C
+*.so
+EOL
+
+# Creates __init__.py file
+cat > $proj_name.py <<EOL
+#!/usr/bin/env python
+"""Basic Flask app"""
+
+from flask import Flask
+
+def create_app():
+    """Initializes the flask app"""
+    app = Flask(__name__, static_url_path="")
+    return app
+
+if __name__ == "__main__":
+    FLASK_APP = create_app()
+    FLASK_APP.run(host="0.0.0.0", port=80)
+
+EOL
+chmod +x $proj_name.py
+
+# Creates the runnable script that exports the flags to run the flask app
+cat > run.sh <<EOL
+# Runs the flask app
+export FLASK_APP=$proj_name
+export FLASK_DEBUG=1
+export FLASK_ENV=development
+flask run
+
+EOL
+chmod +x run.sh
+
+}
+
+
+# Creates a simple new flask backend
+# uses SQLAlachemy
+function flaskbackend(){
+  if [ $# -ne 1 ]; then
+    echo "flasknew <project_name>"
+    return 1
+  fi
+  local proj_name="$1"
+  mkdir "$proj_name"
+  cd "$proj_name"
+  git init
+
+  mkdir instance
+  cat > instance/.gitignore <<EOL
+*
+!.gitignore
+EOL
+
+ve
+pip install -U Flask
+
+# .gitignore
+cat > .gitignore <<EOL
+# Python
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+.tox/
+.cache
+.coverage
+docs/_build/
+*.egg-info/
+.installed.cfg
+*.egg
+.mypy_cache/
+.pytest_cache/
+*.coverage*
+# Vim
+*.swp
+# C
+*.so
+EOL
+
+# Creates __init__.py file
+cat > $proj_name.py <<EOL
+#!/usr/bin/env python
+"""Basic Flask app"""
+
+from flask import Flask
+
+def create_app():
+    """Initializes the flask app"""
+    app = Flask(__name__, static_url_path="")
+    return app
+
+if __name__ == "__main__":
+    FLASK_APP = create_app()
+    FLASK_APP.run(host="0.0.0.0", port=80)
+
+EOL
+chmod +x $proj_name.py
+
+# Creates the runnable script that exports the flags to run the flask app
+cat > run.sh <<EOL
+# Runs the flask app
+export FLASK_APP=$proj_name
+export FLASK_DEBUG=1
+export FLASK_ENV=development
+flask run
+
+EOL
+chmod +x run.sh
+
+  # Creates structure directories
+  mkdir models
+  mkdir routes
+  mkdir utils
+}
+
+
+# Easy way to call ssh
+function zssh(){
+  if [ $# -ne 2 ]; then
+    echo "zzsh <key> <server>"
+    return 1
+  fi
+  ssh -i ~/.ssh/$1 root@$2
+}
+
+# Uses Cowsay from a custom list of words
+function quote() {
+  local cowsay_quote="$(fortune | grep -v '\-\-' | grep .)"
+  echo -e "$cowsay_quote" | cowsay
+}
 
 
 # }}}
@@ -471,7 +647,7 @@ include ~/.bash/sensitive
 # turn off ctrl-s and ctrl-q from freezing / unfreezing terminal
 
 stty -ixon
-chata
+# chata
 # fortune | cowsay -f $(ls /usr/share/cowsay/cows/ | shuf -n1) | lolcat
 
 # }}}
@@ -502,7 +678,6 @@ alias pbcopy="perl -pe 'chomp if eof' | xsel --clipboard --input"
 alias pbpaste="xsel --clipboard --output"
 
 # Useful aliases
-alias activate="source venv/bin/activate"
 alias zshconfig="vim ~/.zshrc"
 alias zshrc="vim ~/.zshrc"
 alias ohmyzsh="vim ~/.oh-my-zsh"
@@ -511,7 +686,6 @@ alias vimrc="vim ~/.config/nvim/init.vim"
 alias zshedit="vim ~/.zshrc"
 
 # Handy shortcuts
-alias trivia="cd $HOME/proyect/trivia && activate"
 
 # Vim and vi
 alias f="vim"
@@ -538,12 +712,13 @@ alias .="cd .."
 alias ..="cd ../../"
 alias ...="cd ../../../"
 alias ....="cd ../../../../"
+alias .....="cd ../../../../../"
 
 alias m="man"
 alias s="ls"
 alias sl="ls"
 alias ks="ls"
-alias tmuxedit="vim ~/.tmux.conf"
+alias tedit="vim ~/.tmux.conf"
 alias reload="source ~/.zshrc"
 alias confter="sudo dpkg-reconfigure console-setup"
 alias alacredit="f ~/.config/alacritty/alacritty.yml"
@@ -557,6 +732,13 @@ alias gm='git commit --verbose'
 alias gma='git add --all && git commit --verbose'
 alias gp='git remote prune origin'
 alias gd='git diff'
+alias gcim='git commit -m'
+
+alias p="pass"
+alias dotfiles="cd ~/dotfiles"
+
+# NPM
+alias ns="npm start"
 
 # }}}
 # Plugins --- {{{
@@ -572,6 +754,8 @@ if [ -f ~/.zplug/init.zsh ]; then
   zplug "zsh-users/zsh-completions", as:plugin
   zplug "zsh-users/zsh-syntax-highlighting", as:plugin
   zplug "nobeans/zsh-sdkman", as:plugin
+  zplug "zpm-zsh/mysql-colorize", as:plugin
+  zplug "voronkovich/mysql.plugin.zsh", as:plugin
   zplug "junegunn/fzf-bin", \
     from:gh-r, \
     as:command, \

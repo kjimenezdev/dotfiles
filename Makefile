@@ -2,16 +2,12 @@ SHELL=/bin/bash
 
 .PHONY: default
 default: ## By default make runs help
-help
-
-.PHONY: help
-help:
-@echo help
-
+	@help
 
 CONFIG_DIRS_DOTFILES := $(wildcard dotfiles/.config/*)
 CONFIG_DIRS_HOME := $(subst dotfiles, ~, $(CONFIG_DIRS_DOTFILES))
 
+.PHONY: help
 help: ## Show this help.
 	@fgrep -h "##" $(MAKEFILE_LIST) | \
 		fgrep -v fgrep | \

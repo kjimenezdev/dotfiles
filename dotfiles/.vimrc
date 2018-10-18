@@ -1,6 +1,7 @@
 " General: Notes
 "
 " Author: Samuel Roeca
+" Maintainer: Konrad Jimenez
 " Date: August 15, 2017
 " TLDR: vimrc minimum viable product for Python programming
 "
@@ -119,15 +120,20 @@ Plug 'NLKNguyen/papercolor-theme'
 
 " Utils
 Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-surround'
+" Plug 'tpope/vim-surround'
 Plug 'myusuf3/numbers.vim'
 Plug 'jiangmiao/auto-pairs'
 Plug 'christoomey/vim-system-copy'
 Plug 'mhinz/vim-startify'
 Plug 'terryma/vim-multiple-cursors'
+Plug 'simeji/winresizer'
 
 " Language-specific syntax
 Plug 'hdima/python-syntax'
+Plug 'leafgarland/typescript-vim'
+Plug 'magicalbanana/sql-syntax-vim'
+Plug 'mxw/vim-jsx'
+Plug 'sukima/xmledit'
 
 " Extensions for markdown
 Plug 'majutsushi/tagbar'
@@ -138,16 +144,51 @@ Plug 'hynek/vim-python-pep8-indent'
 
 " NerdTree
 Plug 'scrooloose/nerdtree'
+
+" NerdTree git plugin
 Plug 'Xuyuanp/nerdtree-git-plugin'
 
 " Preview
 Plug 'tyru/open-browser.vim'
 
-" Autocompletion
+" Python auto-completion
 Plug 'davidhalter/jedi-vim'
-Plug 'mxw/vim-jsx'
-Plug 'sukima/xmledit'
+
+" Typescript autoimports
+Plug 'Quramy/tsuquyomi'
+
+" Autocomplete html tags
 Plug 'alvan/vim-closetag'
+
+" Android
+Plug 'hsanson/vim-android'
+
+" Javascript
+Plug 'pangloss/vim-javascript'
+
+" Python Indentation
+Plug 'hynek/vim-python-pep8-indent'
+
+" Intentline
+Plug 'Yggdroot/indentLine'
+
+" CSS coloring
+Plug 'ap/vim-css-color'
+
+" Choosewin
+Plug 't9md/vim-choosewin'
+
+" Vim sandwich
+Plug 'machakann/vim-sandwich'
+
+" Bullets
+Plug 'dkarter/bullets.vim'
+
+" Abolish
+Plug 'tpope/vim-abolish'
+
+" Yaml
+Plug 'stephpy/vim-yaml'
 
 call plug#end()
 
@@ -172,6 +213,17 @@ augroup fold_settings
   autocmd FileType vim setlocal foldlevelstart=0
   autocmd FileType * setlocal foldnestmax=1
 augroup END
+
+augroup javascript_folding
+    au!
+    au FileType javascript setlocal foldmethod=syntax
+augroup END
+
+" augroup typescript_folding
+"     au!
+"     au FileType typescript setlocal foldmethod=syntax
+" augroup END
+
 
 " }}}
 " General: Trailing whitespace ------------- {{{
@@ -277,12 +329,41 @@ nnoremap <silent><leader>r :NumbersToggle<CR>
 " TogglePluginWindows:
 nnoremap <silent> <space>j :NERDTreeToggle<CR>
 nnoremap <silent> <space>J :call NERDTreeToggleCustom()<CR>
-nnoremap <silent> <space>l :TagbarToggle <CR>
-nnoremap <silent> <space>u :UndotreeToggle
+nnoremap <silent> <space>u :UndotreeToggle<CR>
 
 " Exiting: allows to get out from files easily
 nnoremap <c-q> <esc>:q<CR>
-nnoremap <c-w> <esc>:wq<CR>
+
+" Resizing: allows to resize vim panes
+nnoremap <leader>l :vertical resize+5<CR>
+nnoremap <leader>h :vertical resize-5<CR>
+
+" ResizeWindow: up and down; relies on custom functions
+nnoremap <silent> <leader><leader>h mz:call ResizeWindowHeight()<CR>`z
+nnoremap <silent> <leader><leader>w mz:call ResizeWindowWidth()<CR>`z
+
+" Tagbar
+nnoremap <silent> <space>l :TagbarToggle <CR>
+
+" Choosewin
+nnoremap <leader>q :ChooseWin<CR>
+
+" PlugInstall
+nnoremap <leader>p :PlugInstall<CR>
+nnoremap <leader>c :PlugClean<CR>
+
+" Exit: Preview and Help && QuickFix and Location List
+inoremap <silent> <C-c> <Esc>:pclose <BAR> helpclose <BAR> cclose <BAR> lclose<CR>a
+nnoremap <silent> <C-c> :pclose <BAR> helpclose <BAR> cclose <BAR> lclose<CR>
+
+" Omnicompletion:
+" <C-@> is signal sent by terminal when pressing <C-Space>
+" Need to include <C-Space> as well for neovim sometimes
+inoremap <C-@> <C-x><C-o>
+inoremap <C-space> <C-x><C-o>
+
+" Line spliting:
+nnoremap SS :%s//&\r/<CR>
 
 " }}}
 " General: Cleanup ------------------ {{{
@@ -351,12 +432,11 @@ let g:startify_custom_footer = [
 "  }}}
 "  Plugin: Plugin Configure ------------- {{{
 "
-" Python:
 " Open module, e.g. :Pyimport os (opens the os module)
 let g:jedi#popup_on_dot = 0
 let g:jedi#show_call_signatures = 0
-let g:jedi#auto_close_doc = 0
-let g:jedi#smart_auto_mappings = 0
+let g:jedi#auto_close_doc = 1
+let g:jedi#smart_auto_mappings = 1
 let g:jedi#force_py_version = 3
 
 " mappings
@@ -365,9 +445,45 @@ let g:jedi#force_py_version = 3
 " configure. See 'set completeopt' in my global config for my settings
 let g:jedi#auto_vim_configuration = 0
 let g:jedi#goto_command = "<C-]>"
-let g:jedi#documentation_command = "<leader>sd"
-let g:jedi#usages_command = "<leader>su"
-let g:jedi#rename_command = "<leader>sr"
+let g:jedi#documentation_command = "<leader>gd"
+let g:jedi#usages_command = "<leader>gu"
+let g:jedi#rename_command = "<leader>gr"
+
+" VimJavascript:
+let g:javascript_plugin_flow = 1
+
+" JSX: for .js files in addition to .jsx
+let g:jsx_ext_required = 0
+
+" JsDoc:
+let g:jsdoc_enable_es6 = 1
+
+" AutoPEP8:
+let g:autopep8_disable_show_diff = 1
+
+" IndentLines:
+let g:indentLine_enabled = 0  " indentlines disabled by default
+
+" WinResize:
+let g:winresizer_start_key = '<C-\>'
+let g:winresizer_vert_resize = 1
+let g:winresizer_horiz_resize = 1
+
+" Bullets
+let g:bullets_enabled_file_types = [
+    \ 'markdown',
+    \ 'text',
+    \ 'gitcommit',
+    \ 'scratch'
+    \]
+
+" Typescript
+let g:typescript_compiler_binary = 'tsc'
+let g:typescript_compiler_options = ''
+autocmd QuickFixCmdPost [^l]* nested cwindow
+autocmd QuickFixCmdPost    l* nested lwindow
+
+
 "  }}}
 " General: Filetype specification ------------ {{{
 
@@ -396,4 +512,56 @@ augroup filetype_vim
         \endif
 augroup END
 
+" }}}
+" General: Resize Window --- {{{
+
+" WindowWidth: Resize window to a couple more than longest line
+" modified function from:
+" https://stackoverflow.com/questions/2075276/longest-line-in-vim
+function! ResizeWindowWidth()
+  let maxlength   = 0
+  let linenumber  = 1
+  while linenumber <= line("$")
+    exe ":" . linenumber
+    let linelength  = virtcol("$")
+    if maxlength < linelength
+      let maxlength = linelength
+    endif
+    let linenumber  = linenumber+1
+  endwhile
+  exe ":vertical resize " . (maxlength + 4)
+endfunction
+
+function! ResizeWindowHeight()
+  let initial = winnr()
+
+  " this duplicates code but avoids polluting global namespace
+  wincmd k
+  if winnr() != initial
+    exe initial . "wincmd w"
+    exe ":1"
+    exe "resize " . (line('$') + 1)
+    return
+  endif
+
+  wincmd j
+  if winnr() != initial
+    exe initial . "wincmd w"
+    exe ":1"
+    exe "resize " . (line('$') + 1)
+    return
+  endif
+endfunction
+
+" }}}
+"  Plugin: Tagbar ------ {{{
+let g:tagbar_map_showproto = '`'
+let g:tagbar_show_linenumbers = -1
+let g:tagbar_autofocus = 1
+let g:tagbar_indent = 1
+let g:tagbar_sort = 0  " order by order in sort file
+let g:tagbar_case_insensitive = 1
+let g:tagbar_width = 37
+let g:tagbar_silent = 1
+let g:tagbar_foldlevel = 0
 " }}}
