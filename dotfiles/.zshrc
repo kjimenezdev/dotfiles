@@ -648,6 +648,7 @@ alias gma='git add --all && git commit --verbose'
 alias gp='git remote prune origin'
 alias gd='git diff'
 alias gcim='git commit -m'
+alias checkout='git checkout'
 
 alias p="pass"
 alias dotfiles="cd ~/dotfiles"
