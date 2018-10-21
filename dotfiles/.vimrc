@@ -120,7 +120,6 @@ Plug 'NLKNguyen/papercolor-theme'
 
 " Utils
 Plug 'tpope/vim-commentary'
-" Plug 'tpope/vim-surround'
 Plug 'myusuf3/numbers.vim'
 Plug 'jiangmiao/auto-pairs'
 Plug 'christoomey/vim-system-copy'
@@ -138,6 +137,8 @@ Plug 'sukima/xmledit'
 " Extensions for markdown
 Plug 'majutsushi/tagbar'
 Plug 'lvht/tagbar-markdown'
+" Additional requirements
+"   npm install -g jsctags
 
 " Indentation
 Plug 'hynek/vim-python-pep8-indent'
@@ -187,10 +188,9 @@ Plug 'dkarter/bullets.vim'
 " Abolish
 Plug 'tpope/vim-abolish'
 
-" YouCompleteMe
-Plug 'Valloric/YouCompleteMe'
-
-Plug 'Shougo/vimproc.vim'
+" Fuzzy finder
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
 
 call plug#end()
 
@@ -216,15 +216,11 @@ augroup fold_settings
   autocmd FileType * setlocal foldnestmax=1
 augroup END
 
-augroup javascript_folding
+augroup folding_methods
     au!
-    au FileType javascript setlocal foldmethod=syntax
+    au FileType python setlocal foldmethod=indent
+    au FileType javascript,typescript setlocal foldmethod=syntax
 augroup END
-
-" augroup typescript_folding
-"     au!
-"     au FileType typescript setlocal foldmethod=syntax
-" augroup END
 
 
 " }}}
@@ -307,6 +303,7 @@ let g:python_highlight_all = 1
 
 " Put your key remappings here
 " Prefer nnoremap to nmap, inoremap to imap, and vnoremap to vmap
+"
 " Save: allows saving easily
 :nnoremap <c-s> <esc>:w<CR>
 

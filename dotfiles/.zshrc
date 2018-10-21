@@ -655,6 +655,9 @@ alias dotfiles="cd ~/dotfiles"
 
 # NPM
 alias ns="npm start"
+alias ni="npm install"
+alias nu="npm uninstall"
+alias na="npm audit"
 
 # }}}
 # Plugins --- {{{
@@ -695,4 +698,3 @@ else
 fi
 
 # }}}
-
