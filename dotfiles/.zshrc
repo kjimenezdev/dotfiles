@@ -37,11 +37,6 @@ clubhouse() {
   echo -e "## Objective\n## Value\n## Acceptance Criteria" | pbcopy
 }
 
-# Reload bashrc
-so() {
-  source ~/.bashrc
-}
-
 # Create New Python Repo
 function pynew() {
   if [ $# -ne 1 ]; then
@@ -201,7 +196,7 @@ function dat(){
   strfile -c % "$file_name" "$file_name.dat"
 }
 
-function chata(){
+function cowme(){
  local cowsay_quote="$(fortune -s ~/dotfiles/dotfiles/fortunes)"
  if [ "$(uname 2> /dev/null)" != "Linux" ]; then
     echo -e "$cowsay_quote" | cowsay -f $(ls /usr/local/Cellar/cowsay/3.04/share/cows/ | gshuf -n1) | lolcat
@@ -398,7 +393,6 @@ function quote() {
   local cowsay_quote="$(fortune | grep -v '\-\-' | grep .)"
   echo -e "$cowsay_quote" | cowsay
 }
-
 
 # }}}
 # Exported variable: LS_COLORS --- {{{
@@ -633,6 +627,7 @@ alias m="man"
 alias s="ls"
 alias sl="ls"
 alias ks="ls"
+alias lls="ll"
 alias tedit="vim ~/.tmux.conf"
 alias reload="source ~/.zshrc"
 alias confter="sudo dpkg-reconfigure console-setup"
@@ -648,7 +643,8 @@ alias gma='git add --all && git commit --verbose'
 alias gp='git remote prune origin'
 alias gd='git diff'
 alias gcim='git commit -m'
-alias checkout='git checkout'
+alias gcheckout='git checkout'
+alias gremote='git remote'
 
 alias p="pass"
 alias dotfiles="cd ~/dotfiles"

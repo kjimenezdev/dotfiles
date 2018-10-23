@@ -187,10 +187,8 @@ Plug 'dkarter/bullets.vim'
 " Abolish
 Plug 'tpope/vim-abolish'
 
-" YouCompleteMe
-Plug 'Valloric/YouCompleteMe'
-
-Plug 'Shougo/vimproc.vim'
+Plug 'aklt/plantuml-syntax'
+Plug 'weirongxu/plantuml-previewer.vim'
 
 call plug#end()
 
