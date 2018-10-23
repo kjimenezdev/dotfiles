@@ -130,6 +130,7 @@ Plug 'simeji/winresizer'
 " Language-specific syntax
 Plug 'hdima/python-syntax'
 Plug 'leafgarland/typescript-vim'
+Plug 'aklt/plantuml-syntax'
 Plug 'magicalbanana/sql-syntax-vim'
 Plug 'mxw/vim-jsx'
 Plug 'sukima/xmledit'
@@ -151,6 +152,7 @@ Plug 'Xuyuanp/nerdtree-git-plugin'
 
 " Preview
 Plug 'tyru/open-browser.vim'
+Plug 'weirongxu/plantuml-previewer.vim'
 
 " Python auto-completion
 Plug 'davidhalter/jedi-vim'
@@ -188,9 +190,25 @@ Plug 'dkarter/bullets.vim'
 " Abolish
 Plug 'tpope/vim-abolish'
 
+" Pep8 Indentation
+Plug 'tell-k/vim-autopep8'
+
 " Fuzzy finder
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
+
+" Markdown preview
+function! BuildComposer(info)
+  if a:info.status != 'unchanged' || a:info.force
+    if has('nvim')
+      !cargo build --release
+    else
+      !cargo build --release --no-default-features --features json-rpc
+    endif
+  endif
+endfunction
+Plug 'euclio/vim-markdown-composer', { 'do': function('BuildComposer') }
+
 
 call plug#end()
 
@@ -219,7 +237,7 @@ augroup END
 augroup folding_methods
     au!
     au FileType python setlocal foldmethod=indent
-    au FileType javascript,typescript setlocal foldmethod=syntax
+    au FileType javascript, typescript setlocal foldmethod=syntax
 augroup END
 
 
@@ -350,6 +368,7 @@ nnoremap <leader>q :ChooseWin<CR>
 " PlugInstall
 nnoremap <leader>p :PlugInstall<CR>
 nnoremap <leader>c :PlugClean<CR>
+nnoremap <leader>po :PlantumlOpen<CR>
 
 " }}}
 " General: Cleanup ------------------ {{{
@@ -422,7 +441,7 @@ let g:startify_custom_footer = [
 " Open module, e.g. :Pyimport os (opens the os module)
 let g:jedi#popup_on_dot = 0
 let g:jedi#show_call_signatures = 0
-let g:jedi#auto_close_doc = 0
+let g:jedi#auto_close_doc = 1
 let g:jedi#smart_auto_mappings = 0
 let g:jedi#force_py_version = 3
 
