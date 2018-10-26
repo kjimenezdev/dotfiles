@@ -190,6 +190,12 @@ Plug 'tpope/vim-abolish'
 Plug 'aklt/plantuml-syntax'
 Plug 'weirongxu/plantuml-previewer.vim'
 
+" AutoPep8
+Plug 'tell-k/vim-autopep8'
+
+" Pydocstring
+" Plug 'heavenshell/vim-pydocstring'
+
 call plug#end()
 
 " }}}
@@ -348,9 +354,14 @@ nnoremap <silent> <space>l :TagbarToggle <CR>
 " Choosewin
 nnoremap <leader>q :ChooseWin<CR>
 
-" PlugInstall
-nnoremap <leader>p :PlugInstall<CR>
-nnoremap <leader>c :PlugClean<CR>
+" Autopep8 indentation
+nnoremap <leader>p :Autopep8<CR>
+
+" PyDocstring
+nnoremap <leader>d :Pydocstring
+
+" IndentLines: toggle if indent lines is visible
+nnoremap <silent> <leader>i :IndentLinesToggle<CR>
 
 " }}}
 " General: Cleanup ------------------ {{{
@@ -423,7 +434,7 @@ let g:startify_custom_footer = [
 " Open module, e.g. :Pyimport os (opens the os module)
 let g:jedi#popup_on_dot = 0
 let g:jedi#show_call_signatures = 0
-let g:jedi#auto_close_doc = 0
+let g:jedi#auto_close_doc = 1
 let g:jedi#smart_auto_mappings = 0
 let g:jedi#force_py_version = 3
 

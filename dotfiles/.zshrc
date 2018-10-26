@@ -645,9 +645,14 @@ alias gd='git diff'
 alias gcim='git commit -m'
 alias gcheckout='git checkout'
 alias gremote='git remote'
+alias fetch='git fetch'
 
 alias p="pass"
 alias dotfiles="cd ~/dotfiles"
+alias sensitive="vim ~/.bash/sensitive"
+
+# Pylint
+alias pylint="pylint --output-format=colorized"
 
 # NPM
 alias ns="npm start"
