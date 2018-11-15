@@ -138,6 +138,7 @@ Plug 'sukima/xmledit'
 " Extensions for markdown
 Plug 'majutsushi/tagbar'
 Plug 'lvht/tagbar-markdown'
+Plug 'JamshedVesuna/vim-markdown-preview'
 
 " Indentation
 Plug 'hynek/vim-python-pep8-indent'
@@ -153,6 +154,9 @@ Plug 'tyru/open-browser.vim'
 
 " Python auto-completion
 Plug 'davidhalter/jedi-vim'
+
+" Autocompletion
+Plug 'marijnh/tern_for_vim'
 
 " Typescript autoimports
 Plug 'Quramy/tsuquyomi'
@@ -195,6 +199,17 @@ Plug 'tell-k/vim-autopep8'
 
 " Pydocstring
 " Plug 'heavenshell/vim-pydocstring'
+
+" Asyncronous linting
+Plug 'w0rp/ale'
+
+" Jenkins Syntax
+Plug 'khalliday7/Jenkinsfile-vim-syntax'
+Plug 'vim-scripts/groovyindent-unix'
+
+" Poetry Syntax
+Plug 'cespare/vim-toml'
+Plug 'maralla/vim-toml-enhance'
 
 call plug#end()
 
@@ -357,11 +372,16 @@ nnoremap <leader>q :ChooseWin<CR>
 " Autopep8 indentation
 nnoremap <leader>p :Autopep8<CR>
 
-" PyDocstring
-nnoremap <leader>d :Pydocstring
+" ALEDisable
+nnoremap <leader>d :ALEDisable<CR>
 
 " IndentLines: toggle if indent lines is visible
 nnoremap <silent> <leader>i :IndentLinesToggle<CR>
+
+" Vim Plug Mappings
+nnoremap <silent> <space>p :PlugInstall<CR>
+nnoremap <silent> <space>c :PlugClean<CR>
+
 
 " }}}
 " General: Cleanup ------------------ {{{
@@ -482,6 +502,8 @@ let g:typescript_compiler_options = ''
 autocmd QuickFixCmdPost [^l]* nested cwindow
 autocmd QuickFixCmdPost    l* nested lwindow
 
+" Markdown preview
+let vim_markdown_preview_github=1
 
 "  }}}
 " General: Filetype specification ------------ {{{

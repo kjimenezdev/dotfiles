@@ -14,6 +14,7 @@ plugins=(
 git
 )
 
+fpath+=~/.zfunc
 source $ZSH/oh-my-zsh.sh
 
 # Functions --- {{{
@@ -88,7 +89,14 @@ EOL
 
 cat > main.py <<EOL
 #!/usr/bin/env python
-'''The main module'''
+"""The main module"""
+
+def main():
+    print("Hello")
+
+if __name__ == "__main__":
+    main()
+
 EOL
 chmod +x main.py
 }
@@ -111,6 +119,24 @@ function ve() {
     va
   fi
 }
+
+# Simple function to create virtual environmnents
+function pve() {
+  if [ $# -eq 0 ]; then
+    local VENV_NAME="$DEFAULT_VENV_NAME"
+  else
+    local VENV_NAME="$1"
+  fi
+  if [ ! -d "$VENV_NAME" ]; then
+    echo "Creating new Python virtualenv in $VENV_NAME/"
+    python$DEFAULT_PYTHON_VERSION -m venv "$VENV_NAME"
+    source "$VENV_NAME/bin/activate"
+    va
+  else
+    va
+  fi
+}
+
 
 
 # Open files with gnome-open
@@ -205,7 +231,12 @@ function cowme(){
   fi
 }
 
-# Git functions
+# GIT: git-clone keplergrp repos to src/ directory
+function klone() {
+  git clone git@github.com:KeplerGroup/$1
+}
+
+# GIT: git-add adds all the items to the commit
 function gadd() {
   git add .
 }
@@ -394,6 +425,78 @@ function quote() {
   echo -e "$cowsay_quote" | cowsay
 }
 
+# Create and activate Node virtual environment
+function nve() {
+  if [ $# -eq 0 ]; then
+    local VENV_NAME="$DEFAULT_VENV_NAME"
+  else
+    local VENV_NAME="$1"
+  fi
+  if [ ! -d "$VENV_NAME" ]; then
+    echo "Creating new node virtualenv in $VENV_NAME/"
+    nodeenv "$VENV_NAME"
+  else
+    echo "Activating new node virtualenv in $VENV_NAME/"
+  fi
+  source "$VENV_NAME/bin/activate"
+}
+
+# deactivate node virtual environment
+function nvd() {
+  deactivate_node
+}
+
+
+function kzoom() {
+  if [ $# -ne 1 ]; then
+    echo "kzoom <idx>"
+    return 1
+  fi
+  case "$1" in
+    1) echo "Joining TDS link"
+      xdg-open $ZOOM_LINK_TDS
+      ;;
+    2) echo "Joining personal meeting id"
+       xdg-open $ZOOM_LINK_PERSONAL
+       ;;
+
+  esac
+}
+
+function pygitignore() {
+  cat > .gitignore <<EOL
+# Python
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+.tox/
+.cache
+.coverage
+docs/_build/
+*.egg-info/
+.installed.cfg
+*.egg
+.mypy_cache/
+.pytest_cache/
+*.coverage*
+.python-version
+# Vim
+*.swp
+# C
+*.so
+EOL
+}
+
+function dockrmall() {
+  docker rmi $(docker images -a -q)
+}
+
+# Executed at the point where the main shell is about to exit normally.
+function zshexit() {
+
+}
+
 # }}}
 # Exported variable: LS_COLORS --- {{{
 
@@ -550,6 +653,9 @@ include () {
 
 include ~/.bash/sensitive
 
+# Poetry auto-completion
+# poetry completions zsh > ~/.zfunc/_poetry
+
 # }}}
 # Executed Commands --- {{{
 
@@ -646,6 +752,7 @@ alias gcim='git commit -m'
 alias gcheckout='git checkout'
 alias gremote='git remote'
 alias fetch='git fetch'
+alias stash='git stash'
 
 alias p="pass"
 alias dotfiles="cd ~/dotfiles"
@@ -656,6 +763,28 @@ alias pylint="pylint --output-format=colorized"
 
 # NPM
 alias ns="npm start"
+
+# Pip
+alias pipi="pip install"
+alias pipir="pip install -r"
+
+# Poetry
+alias ponew="poetry new"
+alias poadd="poetry add"
+alias poins="poetry install"
+alias porm="poetry remove"
+alias poupd="poetry update"
+alias posear="poetry search"
+
+# postgres
+alias psqlu="psql -U postgres -W"
+alias pgcliu="pgcli -U postgres -W"
+
+# Quick visited paths
+alias konrad="cd $HOME/Konrad"
+alias kepler="cd $HOME/Kepler"
+alias standups="cd $HOME/Kepler/standups"
+alias kaws="xdg-open https://keplergroup.signin.aws.amazon.com/console"
 
 # }}}
 # Plugins --- {{{
@@ -671,7 +800,7 @@ if [ -f ~/.zplug/init.zsh ]; then
   zplug "zsh-users/zsh-completions", as:plugin
   zplug "zsh-users/zsh-syntax-highlighting", as:plugin
   zplug "nobeans/zsh-sdkman", as:plugin
-  zplug "zpm-zsh/mysql-colorize", as:plugin
+  # zplug "zpm-zsh/mysql-colorize", as:plugin
   zplug "voronkovich/mysql.plugin.zsh", as:plugin
   zplug "junegunn/fzf-bin", \
     from:gh-r, \
@@ -697,3 +826,9 @@ fi
 
 # }}}
 
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/home/kjimenez/google-cloud-sdk/path.zsh.inc' ]; then source '/home/kjimenez/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/home/kjimenez/google-cloud-sdk/completion.zsh.inc' ]; then source '/home/kjimenez/google-cloud-sdk/completion.zsh.inc'; fi
