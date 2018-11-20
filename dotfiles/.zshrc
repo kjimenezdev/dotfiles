@@ -54,13 +54,17 @@ function pynew() {
   git init
   mkdir instance
   pygnore
-  pymain
+  pymain main
   pve
   poedev
 }
 
 function pymain() {
-cat > main.py <<EOL
+  if [ $# -ne 1 ]; then
+    echo "main <script_name>"
+    return 1
+  fi
+  cat > $1.py <<EOL
 #!/usr/bin/env python
 """The main module"""
 
@@ -189,12 +193,12 @@ SHELL=/bin/bash
 
 .PHONY: default
 default: ## By default make runs help
-	help
+        help
 
 .PHONY: help
 help: ## Prints target and a help message
-	@grep -E '^[a-zA-Z_-]+:.*?## .*\$\$' \$(MAKEFILE_LIST) |  \\
-		awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", \$\$1, \$\$2}'
+        @grep -E '^[a-zA-Z_-]+:.*?## .*\$\$' \$(MAKEFILE_LIST) |  \\
+                awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", \$\$1, \$\$2}'
 
 
 #######################################################################
@@ -203,15 +207,15 @@ help: ## Prints target and a help message
 
 .PHONY: docker-build
 docker-build: ## Build Docker image base
-	@docker build -t \$(IMAGE_NAME):base .
+        @docker build -t \$(IMAGE_NAME):base .
 
 .PHONY: docker-run
 docker-run:
-	@docker run -p 4000:80 -t \$(IMAGE_NAME):base
+        @docker run -p 4000:80 -t \$(IMAGE_NAME):base
 
 .PHONY: docker-clean
 docker-clean: # Removes all docker images built by this Makefile
-	@docker rmi \$(IMAGE_NAME)
+        @docker rmi \$(IMAGE_NAME)
 
 
 #################################################################
@@ -220,16 +224,16 @@ docker-clean: # Removes all docker images built by this Makefile
 
 .PHONY: lint
 lint:  ## Run lint tools
-	@pylint --output-format=colorized main.py
-	@mypy main.py
+        @pylint --output-format=colorized main.py
+        @mypy main.py
 
 .PHONY: install
 install: ## Install the application dependencies
-	@poetry install
+        @poetry install
 
 .PHONY: run
 run: ## Run the project
-	@python main.py
+        @python main.py
 
 EOL
 }
@@ -484,22 +488,22 @@ function kzoom() {
     esac
   }
 
-function pygnore() {
+  function pygnore() {
     gitignore Python.gitignore > .gitignore
-}
+  }
 
-function dockrmall() {
-  docker rmi $(docker images -a -q)
-}
+  function dockrmall() {
+    docker rmi $(docker images -a -q)
+  }
 
-# Executed at the point where the main shell is about to exit normally.
-function zshexit() {
+  # Executed at the point where the main shell is about to exit normally.
+  function zshexit() {
 
-}
+  }
 
-# Generates a README.md template for the project
-function readme(){
-  cat > README.md <<EOL
+  # Generates a README.md template for the project
+  function readme(){
+    cat > README.md <<EOL
 # Product Name
 > Short blurb about what your product does.
 
@@ -550,10 +554,10 @@ npm test
 * 0.1.1
     * FIX: Crash when calling `baz()` (Thanks @GenerousContributorName!)
 * 0.1.0
-    * The first proper release
-    * CHANGE: Rename `foo()` to `bar()`
+* The first proper release
+* CHANGE: Rename `foo()` to `bar()`
 * 0.0.1
-    * Work in progress
+* Work in progress
 
 ## Meta
 
