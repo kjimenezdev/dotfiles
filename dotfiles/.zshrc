@@ -254,7 +254,6 @@ install: ## Install the application dependencies
 .PHONY: run
 run: ## Run the project
 	@python main.py
->>>>>>> linux-dotfs
 
 EOL
 }
