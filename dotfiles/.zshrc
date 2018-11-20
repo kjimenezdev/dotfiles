@@ -508,29 +508,8 @@ function kzoom() {
     esac
   }
 
-  function pygitignore() {
-    cat > .gitignore <<EOL
-# Python
-venv/
-.venv/
-__pycache__/
-*.py[cod]
-.tox/
-.cache
-.coverage
-docs/_build/
-*.egg-info/
-.installed.cfg
-*.egg
-.mypy_cache/
-.pytest_cache/
-*.coverage*
-.python-version
-# Vim
-*.swp
-# C
-*.so
-EOL
+function pygnore() {
+    gitignore Python.gitignore > .gitignore
 }
 
 function dockrmall() {
@@ -630,6 +609,32 @@ EOL
 function base-proj() {
   pynew
 }
+# Print out the Github-recommended gitignore
+export GITIGNORE_DIR=$HOME/src/lib/gitignore
+function gitignore() {
+  if [ ! -d "$GITIGNORE_DIR" ]; then
+    mkdir -p $HOME/src/lib
+    git clone https://github.com/github/gitignore $GITIGNORE_DIR
+    return 1
+  elif [ $# -eq 0 ]; then
+    echo "Usage: gitignore <file1> <file2> <file3> <file...n>"
+    return 1
+  else
+    # print all the files
+    local count=0
+    for filevalue in $@; do
+      echo "#################################################################"
+      echo "# $filevalue"
+      echo "#################################################################"
+      cat $GITIGNORE_DIR/$filevalue
+      if [ $count -ne $# ]; then
+        echo
+      fi
+      (( count++ ))
+    done
+  fi
+}
+compdef "_files -W $GITIGNORE_DIR/" gitignore
 
 # }}}
 # Exported variable: LS_COLORS --- {{{
@@ -903,8 +908,6 @@ alias na="npm audit"
 
 alias vpn_aws='sudo openvpn --config $HOME/openvpn/openvpn.conf'
 
-
-
 # Pip
 alias pipi="pip install"
 alias pipir="pip install -r"
@@ -922,8 +925,8 @@ alias psqlu="psql -U postgres -W"
 alias pgcliu="pgcli -U postgres -W"
 
 # Quick visited paths
-alias konrad="cd $HOME/Konrad"
-alias kepler="cd $HOME/Kepler"
+alias konrad="cd $HOME/src/Konrad"
+alias kepler="cd $HOME/src/Kepler"
 alias standups="cd $HOME/Kepler/standups"
 alias kaws="xdg-open https://keplergroup.signin.aws.amazon.com/console"
 
