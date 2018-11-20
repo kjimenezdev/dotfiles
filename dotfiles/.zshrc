@@ -52,45 +52,14 @@ function pynew() {
   mkdir "$dir_name"
   cd "$dir_name"
   git init
-
   mkdir instance
-  cat > instance/.gitignore <<EOL
-*
-!.gitignore
-EOL
+  pygnore
+  pymain
+  pve
+  poedev
+}
 
-# venv/
-ve
-# NOTE: not using pyenv right now
-# pipenv install
-# va
-# pydev
-# deactivate
-# va
-
-# .gitignore
-cat > .gitignore <<EOL
-# Python
-venv/
-.venv/
-__pycache__/
-*.py[cod]
-.tox/
-.cache
-.coverage
-docs/_build/
-*.egg-info/
-.installed.cfg
-*.egg
-.mypy_cache/
-.pytest_cache/
-*.coverage*
-# Vim
-*.swp
-# C
-*.so
-EOL
-
+function pymain() {
 cat > main.py <<EOL
 #!/usr/bin/env python
 """The main module"""
@@ -154,6 +123,13 @@ DEFAULT_PYTHON_VERSION="3"
 
 function pydev() {
   pip install -U pip neovim bpython autopep8 jedi restview
+}
+
+
+function poedev() {
+  pip install -U poetry
+  poetry init
+  poetry add neovim autopep8 jedi
 }
 
 function va() {
