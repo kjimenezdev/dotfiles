@@ -150,7 +150,10 @@ Plug 'scrooloose/nerdtree'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 
 " Preview
+Plug 'greyblake/vim-preview'
 Plug 'tyru/open-browser.vim'
+Plug 'mpetazzoni/autopreview.vim'
+
 
 " Python auto-completion
 Plug 'davidhalter/jedi-vim'
@@ -504,6 +507,17 @@ autocmd QuickFixCmdPost    l* nested lwindow
 
 " Markdown preview
 let vim_markdown_preview_github=1
+
+" Javascript:
+let g:tern#command = ["npx", "tern"]
+let g:tern_show_argument_hints = 'on_move'
+let g:tern_show_signature_in_pum = 1
+augroup javascript_complete
+  autocmd!
+  autocmd FileType javascript nnoremap <buffer> <C-]> :TernDef<CR>
+  autocmd FileType javascript nnoremap <buffer> <leader>gd :TernDoc<CR>
+augroup END
+
 
 "  }}}
 " General: Filetype specification ------------ {{{

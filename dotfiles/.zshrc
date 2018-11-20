@@ -92,11 +92,11 @@ cat > main.py <<EOL
 """The main module"""
 
 def main():
+    """Main function"""
     print("Hello")
 
 if __name__ == "__main__":
     main()
-
 EOL
 chmod +x main.py
 }
@@ -200,16 +200,55 @@ function vd() {
 
 # create a make file
 function mknew(){
+  if [ $# -ne 1 ]; then
+    echo "mknew <project_name>"
+    return 1
+  fi
   cat > Makefile <<EOL
 SHELL=/bin/bash
 
-.PHONY: default
-default: ## By default make runs help
-help
+IMAGE_NAME = ${1}
 
 .PHONY: help
-help:
-@echo help
+help: ## Prints target and a help message
+	@grep -E '^[a-zA-Z_-]+:.*?## .*\$\$' \$(MAKEFILE_LIST) |  \\
+		awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", \$\$1, \$\$2}'
+
+
+#######################################################################
+# Docker
+#######################################################################
+
+.PHONY: docker-build
+docker-build: ## Build Docker image base
+	@docker build -t \$(IMAGE_NAME):base .
+
+.PHONY: docker-run
+docker-run:
+	@docker run -p 4000:80 -t \$(IMAGE_NAME):base
+
+.PHONY: docker-clean
+docker-clean: # Removes all docker images built by this Makefile
+	@docker rmi \$(IMAGE_NAME)
+
+
+#################################################################
+# Project
+#################################################################
+
+.PHONY: lint
+lint:  ## Run lint tools
+	@pylint --output-format=colorized main.py
+	@mypy main.py
+
+.PHONY: install
+install: ## Install the application dependencies
+	@poetry install
+
+.PHONY: run
+run: ## Run the project
+	@python main.py
+
 EOL
 }
 
@@ -223,8 +262,8 @@ function dat(){
 }
 
 function cowme(){
- local cowsay_quote="$(fortune -s ~/dotfiles/dotfiles/fortunes)"
- if [ "$(uname 2> /dev/null)" != "Linux" ]; then
+  local cowsay_quote="$(fortune -s ~/dotfiles/dotfiles/fortunes)"
+  if [ "$(uname 2> /dev/null)" != "Linux" ]; then
     echo -e "$cowsay_quote" | cowsay -f $(ls /usr/local/Cellar/cowsay/3.04/share/cows/ | gshuf -n1) | lolcat
   else
     echo -e "$cowsay_quote" | cowsay -f $(ls /usr/share/cowsay/cows/ | shuf -n1) | lolcat
@@ -403,10 +442,10 @@ flask run
 EOL
 chmod +x run.sh
 
-  # Creates structure directories
-  mkdir models
-  mkdir routes
-  mkdir utils
+# Creates structure directories
+mkdir models
+mkdir routes
+mkdir utils
 }
 
 
@@ -457,14 +496,14 @@ function kzoom() {
       xdg-open $ZOOM_LINK_TDS
       ;;
     2) echo "Joining personal meeting id"
-       xdg-open $ZOOM_LINK_PERSONAL
-       ;;
+      xdg-open $ZOOM_LINK_PERSONAL
+      ;;
 
-  esac
-}
+    esac
+  }
 
-function pygitignore() {
-  cat > .gitignore <<EOL
+  function pygitignore() {
+    cat > .gitignore <<EOL
 # Python
 venv/
 .venv/
