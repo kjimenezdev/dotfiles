@@ -120,6 +120,7 @@ Plug 'NLKNguyen/papercolor-theme'
 
 " Utils
 Plug 'tpope/vim-commentary'
+" Plug 'tpope/vim-surround'
 Plug 'myusuf3/numbers.vim'
 Plug 'jiangmiao/auto-pairs'
 Plug 'christoomey/vim-system-copy'
@@ -130,7 +131,6 @@ Plug 'simeji/winresizer'
 " Language-specific syntax
 Plug 'hdima/python-syntax'
 Plug 'leafgarland/typescript-vim'
-Plug 'aklt/plantuml-syntax'
 Plug 'magicalbanana/sql-syntax-vim'
 Plug 'mxw/vim-jsx'
 Plug 'sukima/xmledit'
@@ -138,8 +138,7 @@ Plug 'sukima/xmledit'
 " Extensions for markdown
 Plug 'majutsushi/tagbar'
 Plug 'lvht/tagbar-markdown'
-" Additional requirements
-"   npm install -g jsctags
+Plug 'JamshedVesuna/vim-markdown-preview'
 
 " Indentation
 Plug 'hynek/vim-python-pep8-indent'
@@ -151,11 +150,16 @@ Plug 'scrooloose/nerdtree'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 
 " Preview
+Plug 'greyblake/vim-preview'
 Plug 'tyru/open-browser.vim'
-Plug 'weirongxu/plantuml-previewer.vim'
+Plug 'mpetazzoni/autopreview.vim'
+
 
 " Python auto-completion
 Plug 'davidhalter/jedi-vim'
+
+" Autocompletion
+Plug 'marijnh/tern_for_vim'
 
 " Typescript autoimports
 Plug 'Quramy/tsuquyomi'
@@ -190,25 +194,25 @@ Plug 'dkarter/bullets.vim'
 " Abolish
 Plug 'tpope/vim-abolish'
 
-" Pep8 Indentation
+Plug 'aklt/plantuml-syntax'
+Plug 'weirongxu/plantuml-previewer.vim'
+
+" AutoPep8
 Plug 'tell-k/vim-autopep8'
 
-" Fuzzy finder
-Plug 'junegunn/fzf'
-Plug 'junegunn/fzf.vim'
+" Pydocstring
+" Plug 'heavenshell/vim-pydocstring'
 
-" Markdown preview
-function! BuildComposer(info)
-  if a:info.status != 'unchanged' || a:info.force
-    if has('nvim')
-      !cargo build --release
-    else
-      !cargo build --release --no-default-features --features json-rpc
-    endif
-  endif
-endfunction
-Plug 'euclio/vim-markdown-composer', { 'do': function('BuildComposer') }
+" Asyncronous linting
+Plug 'w0rp/ale'
 
+" Jenkins Syntax
+Plug 'khalliday7/Jenkinsfile-vim-syntax'
+Plug 'vim-scripts/groovyindent-unix'
+
+" Poetry Syntax
+Plug 'cespare/vim-toml'
+Plug 'maralla/vim-toml-enhance'
 
 call plug#end()
 
@@ -366,9 +370,20 @@ nnoremap <silent> <space>l :TagbarToggle <CR>
 nnoremap <leader>q :ChooseWin<CR>
 
 " PlugInstall
-nnoremap <leader>p :PlugInstall<CR>
-nnoremap <leader>c :PlugClean<CR>
 nnoremap <leader>po :PlantumlOpen<CR>
+
+" Autopep8 indentation
+nnoremap <leader>p :Autopep8<CR>
+
+" ALEDisable
+nnoremap <leader>d :ALEDisable<CR>
+
+" IndentLines: toggle if indent lines is visible
+nnoremap <silent> <leader>i :IndentLinesToggle<CR>
+
+" Vim Plug Mappings
+nnoremap <silent> <space>p :PlugInstall<CR>
+nnoremap <silent> <space>c :PlugClean<CR>
 
 " }}}
 " General: Cleanup ------------------ {{{
@@ -488,6 +503,19 @@ let g:typescript_compiler_binary = 'tsc'
 let g:typescript_compiler_options = ''
 autocmd QuickFixCmdPost [^l]* nested cwindow
 autocmd QuickFixCmdPost    l* nested lwindow
+
+" Markdown preview
+let vim_markdown_preview_github=1
+
+" Javascript:
+let g:tern#command = ["npx", "tern"]
+let g:tern_show_argument_hints = 'on_move'
+let g:tern_show_signature_in_pum = 1
+augroup javascript_complete
+  autocmd!
+  autocmd FileType javascript nnoremap <buffer> <C-]> :TernDef<CR>
+  autocmd FileType javascript nnoremap <buffer> <leader>gd :TernDoc<CR>
+augroup END
 
 
 "  }}}
