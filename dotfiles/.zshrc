@@ -197,13 +197,11 @@ function mknew(){
   cat > Makefile <<EOL
 SHELL=/bin/bash
 
-.PHONY: default
-default: ## By default make runs help
-        help
+.DEFAULT_GOAL := help
 
 .PHONY: help
 help: ## Prints target and a help message
-        @grep -E '^[a-zA-Z_-]+:.*?## .*\$\$' \$(MAKEFILE_LIST) |  \\
+  @grep -E '^[a-zA-Z_-]+:.*?## .*\$\$' \$(MAKEFILE_LIST) |  \\
                 awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", \$\$1, \$\$2}'
 
 
@@ -213,15 +211,15 @@ help: ## Prints target and a help message
 
 .PHONY: docker-build
 docker-build: ## Build Docker image base
-        @docker build -t \$(IMAGE_NAME):base .
+  @docker build -t \$(IMAGE_NAME):base .
 
 .PHONY: docker-run
 docker-run:
-        @docker run -p 4000:80 -t \$(IMAGE_NAME):base
+  @docker run -p 4000:80 -t \$(IMAGE_NAME):base
 
 .PHONY: docker-clean
 docker-clean: # Removes all docker images built by this Makefile
-        @docker rmi \$(IMAGE_NAME)
+  @docker rmi \$(IMAGE_NAME)
 
 
 #################################################################
@@ -230,16 +228,16 @@ docker-clean: # Removes all docker images built by this Makefile
 
 .PHONY: lint
 lint:  ## Run lint tools
-        @pylint --output-format=colorized main.py
+  @pylint --output-format=colorized main.py
         @mypy main.py
 
 .PHONY: install
 install: ## Install the application dependencies
-        @poetry install
+  @poetry install
 
 .PHONY: run
 run: ## Run the project
-        @python main.py
+  @python main.py
 
 EOL
 }
@@ -855,9 +853,7 @@ alias ....="cd ../../../../"
 alias .....="cd ../../../../../"
 
 alias m="man"
-alias s="ls"
-alias sl="ls"
-alias ks="ls"
+alias s="ls" alias sl="ls" alias ks="ls"
 alias lls="ll"
 alias tedit="vim ~/.tmux.conf"
 alias reload="source ~/.zshrc"
@@ -890,6 +886,7 @@ alias pylint="pylint --output-format=colorized"
 # NPM
 alias ns="npm start"
 alias ni="npm install"
+alias nis="npm install --save"
 alias nu="npm uninstall"
 alias na="npm audit"
 
@@ -907,16 +904,17 @@ alias porm="poetry remove"
 alias poupd="poetry update"
 alias posear="poetry search"
 
-# postgres
+# Postgres
 alias psqlu="psql -U postgres -W"
 alias pgcliu="pgcli -U postgres -W"
 
-# Quick visited paths
-alias konrad="cd $HOME/src/Konrad"
-alias kepler="cd $HOME/src/Kepler"
-alias standups="cd $HOME/Kepler/standups"
-alias kaws="xdg-open https://keplergroup.signin.aws.amazon.com/console"
-alias vcopy="echo $VAULT_AUTH_GITHUB_TOKEN | pbcopy"
+# Visited paths
+alias documents="cd $HOME/Documents"
+alias downloads="cd $HOME/Downloads"
+alias konrad="cd $KONRAD"
+alias kepler="cd $KEPLER"
+alias sandbox="cd $SRC/sandbox"
+alias standups="cd $KEPLER/standups"
 
 # }}}
 # Plugins --- {{{
