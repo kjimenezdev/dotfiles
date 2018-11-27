@@ -75,8 +75,14 @@ def main():
 if __name__ == "__main__":
     main()
 EOL
-chmod +x main.py
+chmod +x $1.py
 }
+
+
+function pyinit() {
+  touch __init__.py
+}
+
 
 # [optionally] create and activate Python virtual environment
 function ve() {
@@ -862,6 +868,7 @@ alias dotfiles="cd ~/.dotfiles"
 
 # Git
 alias g='git status'
+alias ggrep='git grep'
 alias gl='git branch --verbose --all'
 alias gm='git commit --verbose'
 alias gma='git add --all && git commit --verbose'
@@ -909,6 +916,7 @@ alias konrad="cd $HOME/src/Konrad"
 alias kepler="cd $HOME/src/Kepler"
 alias standups="cd $HOME/Kepler/standups"
 alias kaws="xdg-open https://keplergroup.signin.aws.amazon.com/console"
+alias vcopy="echo $VAULT_AUTH_GITHUB_TOKEN | pbcopy"
 
 # }}}
 # Plugins --- {{{
