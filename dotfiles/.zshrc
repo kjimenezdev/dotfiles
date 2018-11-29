@@ -139,7 +139,7 @@ function pydev() {
 function poedev() {
   pip install -U poetry
   poetry init
-  poetry add neovim autopep8 jedi
+  poetry add --dev neovim autopep8 jedi
 }
 
 function va() {
