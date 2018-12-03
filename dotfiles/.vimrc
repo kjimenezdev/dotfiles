@@ -226,6 +226,9 @@ Plug 'vim-scripts/groovyindent-unix'
 Plug 'cespare/vim-toml'
 Plug 'maralla/vim-toml-enhance'
 
+" Todo plugin
+Plug 'Dimercel/todo-vim'
+
 call plug#end()
 
 " }}}
@@ -370,6 +373,8 @@ nnoremap <c-q> <esc>:q<CR>
 " Resizing: allows to resize vim panes
 nnoremap <leader>l :vertical resize+5<CR>
 nnoremap <leader>h :vertical resize-5<CR>
+nnoremap <leader>k :horizontal resize+5<CR>
+nnoremap <leader>j :horizontal resize-5<CR>
 
 " ResizeWindow: up and down; relies on custom functions
 nnoremap <silent> <leader><leader>h mz:call ResizeWindowHeight()<CR>`z
@@ -396,6 +401,10 @@ nnoremap <silent> <leader>i :IndentLinesToggle<CR>
 " Vim Plug Mappings
 nnoremap <silent> <space>p :PlugInstall<CR>
 nnoremap <silent> <space>c :PlugClean<CR>
+
+" Todo Plugin
+nnoremap <silent> <space>t :TODOToggle<CR>
+
 
 " }}}
 " General: Cleanup ------------------ {{{
