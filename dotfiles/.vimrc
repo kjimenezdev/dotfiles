@@ -229,6 +229,10 @@ Plug 'maralla/vim-toml-enhance'
 " Todo plugin
 Plug 'Dimercel/todo-vim'
 
+" Color-scheme switcher
+Plug 'xolox/vim-colorscheme-switcher'
+Plug 'xolox/vim-misc'
+
 call plug#end()
 
 " }}}
@@ -256,7 +260,7 @@ augroup END
 augroup folding_methods
     au!
     au FileType python setlocal foldmethod=indent
-    au FileType javascript, typescript setlocal foldmethod=syntax
+    au FileType javascript setlocal foldmethod=syntax
 augroup END
 
 
@@ -399,12 +403,15 @@ nnoremap <leader>d :ALEDisable<CR>
 nnoremap <silent> <leader>i :IndentLinesToggle<CR>
 
 " Vim Plug Mappings
-nnoremap <silent> <space>p :PlugInstall<CR>
-nnoremap <silent> <space>c :PlugClean<CR>
+nnoremap <silent> <space>pi :PlugInstall<CR>
+nnoremap <silent> <space>pc :PlugClean<CR>
 
 " Todo Plugin
 nnoremap <silent> <space>t :TODOToggle<CR>
 
+" ColorSchemeChanger
+nnoremap <silent> <space>n :NextColorScheme<CR>
+nnoremap <silent> <space>p :NextColorScheme<CR>
 
 " }}}
 " General: Cleanup ------------------ {{{
