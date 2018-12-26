@@ -68,7 +68,7 @@ function pymain() {
 #!/usr/bin/env python
 """The main module"""
 
-def main():
+def main() -> None:
     """Main function"""
     print("Hello")
 
@@ -81,6 +81,30 @@ chmod +x $1.py
 
 function pyinit() {
   touch __init__.py
+}
+
+function mypie() {
+cat > mypy.ini <<EOL
+[mypy]
+python_version = 3.7
+disallow_untyped_defs = True
+strict_optional = True
+
+[mypy-hvault.*]
+ignore_missing_imports = True
+
+[mypy-undictify.*]
+ignore_missing_imports = True
+
+[mypy-httplib2.*]
+ignore_missing_imports = True
+
+[mypy-unidecode.*]
+ignore_missing_imports = True
+
+[mypy-keplertools.*]
+ignore_missing_imports = True
+EOL
 }
 
 
@@ -174,7 +198,6 @@ function ve() {
     echo "Creating new Python virtualenv in $VENV_NAME/"
     python$DEFAULT_PYTHON_VERSION -m venv "$VENV_NAME"
     source "$VENV_NAME/bin/activate"
-    pydev
     deactivate
     va
   else
@@ -488,24 +511,24 @@ function kzoom() {
     2) echo "Joining personal meeting id"
       xdg-open $ZOOM_LINK_PERSONAL
       ;;
+  esac
+}
 
-    esac
-  }
+function pygnore() {
+  gitignore Python.gitignore > .gitignore
+}
 
-  function pygnore() {
-    gitignore Python.gitignore > .gitignore
-  }
+function dockrmall() {
+  docker rmi $(docker images -a -q)
+}
 
-  function dockrmall() {
-    docker rmi $(docker images -a -q)
-  }
+function rmcache() {
+  rm -rf __pycache__
+}
 
-  # Executed at the point where the main shell is about to exit normally.
-  function zshexit() {}
-
-  # Generates a README.md template for the project
-  function readme() {
-    cat > README.md <<EOL
+# Generates a README.md template for the project
+function readme() {
+  cat > README.md <<EOL
 # Product Name
 > Short blurb about what your product does.
 
@@ -562,377 +585,374 @@ Distributed under the XYZ license. See ``LICENSE`` for more information.
 [travis-url]: https://travis-ci.org/dbader/node-datadog-metrics
 [wiki]: https://github.com/yourname/yourproject/wiki
 EOL
-  }
+}
 
-  # Necessary files for project start
-  function base-proj() {
-    pynew
-  }
-  # Print out the Github-recommended gitignore
-  export GITIGNORE_DIR=$HOME/src/lib/gitignore
-  function gitignore() {
-    if [ ! -d "$GITIGNORE_DIR" ]; then
-      mkdir -p $HOME/src/lib
-      git clone https://github.com/github/gitignore $GITIGNORE_DIR
-      return 1
-    elif [ $# -eq 0 ]; then
-      echo "Usage: gitignore <file1> <file2> <file3> <file...n>"
-      return 1
-    else
-      # print all the files
-      local count=0
-      for filevalue in $@; do
-        echo "#################################################################"
-        echo "# $filevalue"
-        echo "#################################################################"
-        cat $GITIGNORE_DIR/$filevalue
-        if [ $count -ne $# ]; then
-          echo
-        fi
-        (( count++ ))
-      done
-    fi
-  }
-  compdef "_files -W $GITIGNORE_DIR/" gitignore
-
-  # }}}
-  # Exported variable: LS_COLORS --- {{{
-
-  # Colors when using the LS command
-  # NOTE:
-  # Color codes:
-  #   0   Default Colour
-  #   1   Bold
-  #   4   Underlined
-  #   5   Flashing Text
-  #   7   Reverse Field
-  #   1  Red
-  #   32  Green
-  #   33  Orange
-  #   34  Blue
-  #   35  Purple
-  #   36  Cyan
-  #   37  Grey
-  #   40  Black Background
-  #   41  Red Background
-  #   42  Green Background
-  #   43  Orange Background
-  #   44  Blue Background
-  #   45  Purple Background
-  #   46  Cyan Background
-  #   47  Grey Background
-  #   90  Dark Grey
-  #   91  Light Red
-  #   92  Light Green
-  #   93  Yellow
-  #   94  Light Blue
-  #   95  Light Purple
-  #   96  Turquoise
-  #   100 Dark Grey Background
-  #   101 Light Red Background
-  #   102 Light Green Background
-  #   103 Yellow Background
-  #   104 Light Blue Background
-  #   105 Light Purple Background
-  #   106 Turquoise Background
-  # Parameters
-  #   di 	Directory
-  LS_COLORS="di=1;34:"
-  #   fi 	File
-  LS_COLORS+="fi=0:"
-  #   ln 	Symbolic Link
-  LS_COLORS+="ln=1;36:"
-  #   pi 	Fifo file
-  LS_COLORS+="pi=5:"
-  #   so 	Socket file
-  LS_COLORS+="so=5:"
-  #   bd 	Block (buffered) special file
-  LS_COLORS+="bd=5:"
-  #   cd 	Character (unbuffered) special file
-  LS_COLORS+="cd=5:"
-  #   or 	Symbolic Link pointing to a non-existent file (orphan)
-  LS_COLORS+="or=31:"
-  #   mi 	Non-existent file pointed to by a symbolic link (visible with ls -l)
-  LS_COLORS+="mi=0:"
-  #   ex 	File which is executable (ie. has 'x' set in permissions).
-  LS_COLORS+="ex=1;92:"
-  # additional file types as-defined by their extension
-  LS_COLORS+="*.rpm=90"
-
-  # Finally, export LS_COLORS
-  export LS_COLORS
-
-  # }}}
-  # Exported variables: General --- {{{
-
-  # React
-  export REACT_EDITOR='less'
-
-  # colored GCC warnings and errors
-  export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
-
-  # Configure less (de-initialization clears the screen)
-  # Gives nicely-colored man pages
-  export PAGER=less
-  export LESS='--ignore-case --status-column --LONG-PROMPT --RAW-CONTROL-CHARS --HILITE-UNREAD --tabs=4 --clear-screen'
-  export LESS_TERMCAP_mb=$'\E[1;31m'     # begin bold
-  export LESS_TERMCAP_md=$'\E[1;36m'     # begin blink
-  export LESS_TERMCAP_me=$'\E[0m'        # reset bold/blink
-  export LESS_TERMCAP_so=$'\E[01;44;33m' # begin reverse video
-  export LESS_TERMCAP_se=$'\E[0m'        # reset reverse video
-  export LESS_TERMCAP_us=$'\E[1;32m'     # begin underline
-  export LESS_TERMCAP_ue=$'\E[0m'        # reset underline
-
-  # tmuxinator
-  export EDITOR=vim
-  export SHELL=bash
-
-  # environment variable controlling difference between HI-DPI / Non HI_DPI
-  # turn off because it messes up my pdf tooling
-  export GDK_SCALE=0
-
-  # History: How many lines of history to keep in memory
-  export HISTSIZE=5000
-
-  # Powerlevel settings
-  POWERLEVEL9K_PROMPT_ON_NEWLINE=true
-  POWERLEVEL9K_RPROMPT_ON_NEWLINE=true
-  POWERLEVEL9K_PROMPT_ADD_NEWLINE=true
-  POWERLEVEL9K_DISABLE_RPROMPT=true
-
-  POWERLEVEL9K_MULTILINE_FIRST_PROMPT_PREFIX="↱"
-  POWERLEVEL9K_MULTILINE_LAST_PROMPT_PREFIX="↳ "
-
-  # POWERLEVEL9K_TIME_FOREGROUND='red'
-  # POWERLEVEL9K_TIME_BACKGROUND='blue'
-  # POWERLEVEL9K_VCS_FOREGROUND='021' # Dark blue
-
-  # }}}
-  # Path appends + Misc env setup --- {{{
-
-  PYENV_ROOT="$HOME/.pyenv"
-  if [ -d "$PYENV_ROOT" ]; then
-    export PYENV_ROOT
-    path_radd "$PYENV_ROOT/bin"
-    eval "$(pyenv init -)"
-  fi
-
-  NODENV_ROOT="$HOME/.nodenv"
-  if [ -d "$NODENV_ROOT" ]; then
-    export NODENV_ROOT
-    path_radd "$NODENV_ROOT/bin"
-    eval "$(nodenv init -)"
-  fi
-
-  HOME_BIN="$HOME/bin"
-  if [ -d "$HOME_BIN" ]; then
-    path_ladd "$HOME_BIN"
-  fi
-
-  STACK_LOC="$HOME/.local/bin"
-  if [ -d "$STACK_LOC" ]; then
-    path_ladd "$STACK_LOC"
-  fi
-
-  # EXPORT THE FINAL, MODIFIED PATH
-  export PATH
-
-  # }}}
-
-  #######################################################################
-  # Interactive Bash session settings
-  #######################################################################
-
-  # Import from other Bash Files --- {{{
-
-  include () {
-    [[ -f "$1" ]] && source "$1"
-  }
-
-  include ~/.bash/sensitive
-
-  # Poetry auto-completion
-  # poetry completions zsh > ~/.zfunc/_poetry
-
-  # }}}
-  # Executed Commands --- {{{
-
-  # turn off ctrl-s and ctrl-q from freezing / unfreezing terminal
-
-  stty -ixon
-  # chata
-  # fortune | cowsay -f $(ls /usr/share/cowsay/cows/ | shuf -n1) | lolcat
-
-  # }}}
-  # Aliases --- {{{
-
-  # enable color support of ls and also add handy aliases
-  if [ -x /usr/bin/dircolors ]; then
-    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto'
-    alias dir='dir --color=auto'
-    alias vdir='vdir --color=auto'
-
-    alias grep='grep --color=auto'
-    alias fgrep='fgrep --color=auto'
-    alias egrep='egrep --color=auto'
-  fi
-
-  # Make "vim" direct to nvim
-  alias vim=nvim
-
-  # ls aliases
-  alias ll='ls -alF'
-  alias l='ls -CF'
-
-  # Set copy/paste helper functions
-  # the perl step removes the final newline from the output
-  alias pbcopy="perl -pe 'chomp if eof' | xsel --clipboard --input"
-  alias pbpaste="xsel --clipboard --output"
-
-  # Useful aliases
-  alias zshconfig="vim ~/.zshrc"
-  alias zshrc="vim ~/.zshrc"
-  alias ohmyzsh="vim ~/.oh-my-zsh"
-  alias vimedit="vim ~/.config/nvim/init.vim"
-  alias vimrc="vim ~/.config/nvim/init.vim"
-  alias zshedit="vim ~/.zshrc"
-
-  # Handy shortcuts
-
-  # Vim and vi
-  alias f="vim"
-  alias v="vim"
-  alias vi="vim"
-
-  # Tree that ignores directories that are unuseful
-  alias itree="tree -I '__pycache__|venv|node_modules'"
-
-  # Alias to quit easily tmux panes
-  alias q="exit"
-
-  alias cls="clear"
-  alias la="ls -a"
-  alias .a="ls -a"
-  alias lsna="ls -na"
-  alias lasn="ls -na"
-
-  alias src="source"
-  alias sl="ls"
-  alias ks="ls"
-
-  alias .="cd .."
-  alias ..="cd ../../"
-  alias ...="cd ../../../"
-  alias ....="cd ../../../../"
-  alias .....="cd ../../../../../"
-
-  alias m="man"
-  alias s="ls" alias sl="ls" alias ks="ls"
-  alias lls="ll"
-  alias tedit="vim ~/.tmux.conf"
-  alias reload="source ~/.zshrc"
-  alias confter="sudo dpkg-reconfigure console-setup"
-  alias alacredit="f ~/.config/alacritty/alacritty.yml"
-  alias t="tmux"
-  alias dotfiles="cd ~/.dotfiles"
-
-  # Git
-  alias g='git status'
-  alias ggrep='git grep'
-  alias gl='git branch --verbose --all'
-  alias gm='git commit --verbose'
-  alias gma='git add --all && git commit --verbose'
-  alias gp='git remote prune origin'
-  alias gd='git diff'
-  alias gcim='git commit -m'
-  alias gcheckout='git checkout'
-  alias gremote='git remote'
-  alias fetch='git fetch'
-  alias stash='git stash'
-
-  alias p="pass"
-  alias dotfiles="cd ~/dotfiles"
-  alias sensitive="vim ~/.bash/sensitive"
-
-  # Pylint
-  alias pylint="pylint --output-format=colorized"
-
-  # NPM
-  alias ns="npm start"
-  alias ni="npm install"
-  alias nis="npm install --save"
-  alias nu="npm uninstall"
-  alias na="npm audit"
-
-  alias vpn_aws='sudo openvpn --config $HOME/openvpn/openvpn.conf'
-
-  # Pip
-  alias pipi="pip install"
-  alias pipir="pip install -r"
-
-  # Poetry
-  alias ponew="poetry new"
-  alias poadd="poetry add"
-  alias poins="poetry install"
-  alias porm="poetry remove"
-  alias poupd="poetry update"
-  alias posear="poetry search"
-
-  # Postgres
-  alias psqlu="psql -U postgres -W"
-  alias pgcliu="pgcli -U postgres -W"
-
-  # Visited paths
-  alias documents="cd $HOME/Documents"
-  alias downloads="cd $HOME/Downloads"
-  alias konrad="cd $KONRAD"
-  alias kepler="cd $KEPLER"
-  alias sandbox="cd $SRC/sandbox"
-  alias standups="cd $KEPLER/standups"
-
-  # }}}
-  # Plugins --- {{{
-
-  if [ -f ~/.zplug/init.zsh ]; then
-    source ~/.zplug/init.zsh
-
-    # BEGIN: List plugins
-
-    # use double quotes: the plugin manager author says we must for some reason
-    zplug "paulirish/git-open", as:plugin
-    zplug "greymd/docker-zsh-completion", as:plugin
-    zplug "zsh-users/zsh-completions", as:plugin
-    zplug "zsh-users/zsh-syntax-highlighting", as:plugin
-    zplug "nobeans/zsh-sdkman", as:plugin
-    # zplug "zpm-zsh/mysql-colorize", as:plugin
-    zplug "voronkovich/mysql.plugin.zsh", as:plugin
-    zplug "junegunn/fzf-bin", \
-      from:gh-r, \
-      as:command, \
-      rename-to:fzf
-
-
-    #END: List plugins
-
-    # Install plugins if there are plugins that have not been installed
-    if ! zplug check --verbose; then
-      printf "Install? [y/N]: "
-      if read -q; then
-        echo; zplug install
-      fi
-    fi
-
-    # Then, source plugins and add commands to $PATH
-    zplug load
+# Necessary files for project start
+function base-proj() {
+  pynew
+}
+# Print out the Github-recommended gitignore
+export GITIGNORE_DIR=$HOME/src/lib/gitignore
+function gitignore() {
+  if [ ! -d "$GITIGNORE_DIR" ]; then
+    mkdir -p $HOME/src/lib
+    git clone https://github.com/github/gitignore $GITIGNORE_DIR
+    return 1
+  elif [ $# -eq 0 ]; then
+    echo "Usage: gitignore <file1> <file2> <file3> <file...n>"
+    return 1
   else
-    echo "zplug not installed, so no plugins available"
+    # print all the files
+    local count=0
+    for filevalue in $@; do
+      echo "#################################################################"
+      echo "# $filevalue"
+      echo "#################################################################"
+      cat $GITIGNORE_DIR/$filevalue
+      if [ $count -ne $# ]; then
+        echo
+      fi
+      (( count++ ))
+    done
+  fi
+}
+compdef "_files -W $GITIGNORE_DIR/" gitignore
+
+# }}}
+# Exported variable: LS_COLORS --- {{{
+
+# Colors when using the LS command
+# NOTE:
+# Color codes:
+#   0   Default Colour
+#   1   Bold
+#   4   Underlined
+#   5   Flashing Text
+#   7   Reverse Field
+#   1  Red
+#   32  Green
+#   33  Orange
+#   34  Blue
+#   35  Purple
+#   36  Cyan
+#   37  Grey
+#   40  Black Background
+#   41  Red Background
+#   42  Green Background
+#   43  Orange Background
+#   44  Blue Background
+#   45  Purple Background
+#   46  Cyan Background
+#   47  Grey Background
+#   90  Dark Grey
+#   91  Light Red
+#   92  Light Green
+#   93  Yellow
+#   94  Light Blue
+#   95  Light Purple
+#   96  Turquoise
+#   100 Dark Grey Background
+#   101 Light Red Background
+#   102 Light Green Background
+#   103 Yellow Background
+#   104 Light Blue Background
+#   105 Light Purple Background
+#   106 Turquoise Background
+# Parameters
+#   di 	Directory
+LS_COLORS="di=1;34:"
+#   fi 	File
+LS_COLORS+="fi=0:"
+#   ln 	Symbolic Link
+LS_COLORS+="ln=1;36:"
+#   pi 	Fifo file
+LS_COLORS+="pi=5:"
+#   so 	Socket file
+LS_COLORS+="so=5:"
+#   bd 	Block (buffered) special file
+LS_COLORS+="bd=5:"
+#   cd 	Character (unbuffered) special file
+LS_COLORS+="cd=5:"
+#   or 	Symbolic Link pointing to a non-existent file (orphan)
+LS_COLORS+="or=31:"
+#   mi 	Non-existent file pointed to by a symbolic link (visible with ls -l)
+LS_COLORS+="mi=0:"
+#   ex 	File which is executable (ie. has 'x' set in permissions).
+LS_COLORS+="ex=1;92:"
+# additional file types as-defined by their extension
+LS_COLORS+="*.rpm=90"
+
+# Finally, export LS_COLORS
+export LS_COLORS
+
+# }}}
+# Exported variables: General --- {{{
+
+# React
+export REACT_EDITOR='less'
+
+# colored GCC warnings and errors
+export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+
+# Configure less (de-initialization clears the screen)
+# Gives nicely-colored man pages
+export PAGER=less
+export LESS='--ignore-case --status-column --LONG-PROMPT --RAW-CONTROL-CHARS --HILITE-UNREAD --tabs=4 --clear-screen'
+export LESS_TERMCAP_mb=$'\E[1;31m'     # begin bold
+export LESS_TERMCAP_md=$'\E[1;36m'     # begin blink
+export LESS_TERMCAP_me=$'\E[0m'        # reset bold/blink
+export LESS_TERMCAP_so=$'\E[01;44;33m' # begin reverse video
+export LESS_TERMCAP_se=$'\E[0m'        # reset reverse video
+export LESS_TERMCAP_us=$'\E[1;32m'     # begin underline
+export LESS_TERMCAP_ue=$'\E[0m'        # reset underline
+
+# tmuxinator
+export EDITOR=vim
+export SHELL=bash
+
+# environment variable controlling difference between HI-DPI / Non HI_DPI
+# turn off because it messes up my pdf tooling
+export GDK_SCALE=0
+
+# History: How many lines of history to keep in memory
+export HISTSIZE=5000
+
+# Powerlevel settings
+POWERLEVEL9K_PROMPT_ON_NEWLINE=true
+POWERLEVEL9K_RPROMPT_ON_NEWLINE=true
+POWERLEVEL9K_PROMPT_ADD_NEWLINE=true
+POWERLEVEL9K_DISABLE_RPROMPT=true
+
+POWERLEVEL9K_MULTILINE_FIRST_PROMPT_PREFIX="↱"
+POWERLEVEL9K_MULTILINE_LAST_PROMPT_PREFIX="↳ "
+
+# POWERLEVEL9K_TIME_FOREGROUND='red'
+# POWERLEVEL9K_TIME_BACKGROUND='blue'
+# POWERLEVEL9K_VCS_FOREGROUND='021' # Dark blue
+
+# }}}
+# Path appends + Misc env setup --- {{{
+
+PYENV_ROOT="$HOME/.pyenv"
+if [ -d "$PYENV_ROOT" ]; then
+  export PYENV_ROOT
+  path_radd "$PYENV_ROOT/bin"
+  eval "$(pyenv init -)"
+fi
+
+NODENV_ROOT="$HOME/.nodenv"
+if [ -d "$NODENV_ROOT" ]; then
+  export NODENV_ROOT
+  path_radd "$NODENV_ROOT/bin"
+  eval "$(nodenv init -)"
+fi
+
+HOME_BIN="$HOME/bin"
+if [ -d "$HOME_BIN" ]; then
+  path_ladd "$HOME_BIN"
+fi
+
+STACK_LOC="$HOME/.local/bin"
+if [ -d "$STACK_LOC" ]; then
+  path_ladd "$STACK_LOC"
+fi
+
+# EXPORT THE FINAL, MODIFIED PATH
+export PATH
+
+# }}}
+
+#######################################################################
+# Interactive Bash session settings
+#######################################################################
+
+# Import from other Bash Files --- {{{
+
+include () {
+  [[ -f "$1" ]] && source "$1"
+}
+
+include ~/.bash/sensitive
+
+# Poetry auto-completion
+# poetry completions zsh > ~/.zfunc/_poetry
+
+# }}}
+# Executed Commands --- {{{
+
+# turn off ctrl-s and ctrl-q from freezing / unfreezing terminal
+
+stty -ixon
+# chata
+# fortune | cowsay -f $(ls /usr/share/cowsay/cows/ | shuf -n1) | lolcat
+
+# }}}
+# Aliases --- {{{
+
+# enable color support of ls and also add handy aliases
+if [ -x /usr/bin/dircolors ]; then
+  test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+  alias ls='ls --color=auto'
+  alias dir='dir --color=auto'
+  alias vdir='vdir --color=auto'
+
+  alias grep='grep --color=auto'
+  alias fgrep='fgrep --color=auto'
+  alias egrep='egrep --color=auto'
+fi
+
+# Make "vim" direct to nvim
+alias vim=nvim
+
+# ls aliases
+alias ll='ls -alF'
+alias l='ls -CF'
+
+# Set copy/paste helper functions
+# the perl step removes the final newline from the output
+alias pbcopy="perl -pe 'chomp if eof' | xsel --clipboard --input"
+alias pbpaste="xsel --clipboard --output"
+
+# Useful aliases
+alias zshconfig="vim ~/.zshrc"
+alias zshrc="vim ~/.zshrc"
+alias ohmyzsh="vim ~/.oh-my-zsh"
+alias vimedit="vim ~/.config/nvim/init.vim"
+alias vimrc="vim ~/.config/nvim/init.vim"
+alias zshedit="vim ~/.zshrc"
+
+# Handy shortcuts
+
+# Vim and vi
+alias f="vim"
+alias v="vim"
+alias vi="vim"
+
+# Tree that ignores directories that are unuseful
+alias itree="tree -I '__pycache__|venv|node_modules'"
+
+# Alias to quit easily tmux panes
+alias q="exit"
+
+alias cls="clear"
+alias la="ls -a"
+alias .a="ls -a"
+alias lsna="ls -na"
+alias lasn="ls -na"
+
+alias src="source"
+alias sl="ls"
+alias ks="ls"
+
+alias .="cd .."
+alias ..="cd ../../"
+alias ...="cd ../../../"
+alias ....="cd ../../../../"
+alias .....="cd ../../../../../"
+
+alias m="man"
+alias s="ls" alias sl="ls" alias ks="ls"
+alias lls="ll"
+alias tedit="vim ~/.tmux.conf"
+alias reload="source ~/.zshrc"
+alias confter="sudo dpkg-reconfigure console-setup"
+alias alacredit="f ~/.config/alacritty/alacritty.yml"
+alias t="tmux"
+alias dotfiles="cd ~/.dotfiles"
+
+# Git
+alias g='git status'
+alias ggrep='git grep'
+alias gl='git branch --verbose --all'
+alias gm='git commit --verbose'
+alias gma='git add --all && git commit --verbose'
+alias gp='git remote prune origin'
+alias gd='git diff'
+alias gcim='git commit -m'
+alias gcheckout='git checkout'
+alias gremote='git remote'
+alias fetch='git fetch'
+alias stash='git stash'
+
+alias p="pass"
+alias dotfiles="cd ~/dotfiles"
+alias sensitive="vim ~/.bash/sensitive"
+
+# Pylint
+alias pylint="pylint --output-format=colorized"
+
+# Flask
+alias fr="flask run"
+
+# NPM
+alias ns="npm start"
+alias ni="npm install"
+alias nis="npm install --save"
+alias nu="npm uninstall"
+alias na="npm audit"
+
+alias vpn_aws='sudo openvpn --config $HOME/openvpn/openvpn.conf'
+
+# Pip
+alias pipi="pip install"
+alias pipir="pip install -r"
+alias pipf="pip freeze"
+
+# Poetry
+alias ponew="poetry new"
+alias poadd="poetry add"
+alias poins="poetry install"
+alias poinit="poetry init"
+alias porm="poetry remove"
+alias poupd="poetry update"
+alias posear="poetry search"
+
+# Postgres
+alias psqlu="psql -U postgres -W"
+alias pgcliu="pgcli -U postgres -W"
+
+# }}}
+# Plugins --- {{{
+
+if [ -f ~/.zplug/init.zsh ]; then
+  source ~/.zplug/init.zsh
+
+  # BEGIN: List plugins
+
+  # use double quotes: the plugin manager author says we must for some reason
+  zplug "paulirish/git-open", as:plugin
+  zplug "greymd/docker-zsh-completion", as:plugin
+  zplug "zsh-users/zsh-completions", as:plugin
+  zplug "zsh-users/zsh-syntax-highlighting", as:plugin
+  zplug "nobeans/zsh-sdkman", as:plugin
+  # zplug "zpm-zsh/mysql-colorize", as:plugin
+  zplug "voronkovich/mysql.plugin.zsh", as:plugin
+  zplug "junegunn/fzf-bin", \
+    from:gh-r, \
+    as:command, \
+    rename-to:fzf
+
+
+  #END: List plugins
+
+  # Install plugins if there are plugins that have not been installed
+  if ! zplug check --verbose; then
+    printf "Install? [y/N]: "
+    if read -q; then
+      echo; zplug install
+    fi
   fi
 
-  # }}}
+  # Then, source plugins and add commands to $PATH
+  zplug load
+else
+  echo "zplug not installed, so no plugins available"
+fi
 
-  # The next line updates PATH for the Google Cloud SDK.
-  if [ -f '/home/kjimenez/google-cloud-sdk/path.zsh.inc' ]; then source '/home/kjimenez/google-cloud-sdk/path.zsh.inc'; fi
+# }}}
 
-  # The next line enables shell command completion for gcloud.
-  if [ -f '/home/kjimenez/google-cloud-sdk/completion.zsh.inc' ]; then source '/home/kjimenez/google-cloud-sdk/completion.zsh.inc'; fi
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/home/kjimenez/google-cloud-sdk/path.zsh.inc' ]; then source '/home/kjimenez/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/home/kjimenez/google-cloud-sdk/completion.zsh.inc' ]; then source '/home/kjimenez/google-cloud-sdk/completion.zsh.inc'; fi

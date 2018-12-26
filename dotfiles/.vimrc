@@ -171,7 +171,7 @@ Plug 'mpetazzoni/autopreview.vim'
 Plug 'davidhalter/jedi-vim'
 
 " Autocompletion
-Plug 'marijnh/tern_for_vim'
+Plug 'ternjs/tern_for_vim'
 
 " Typescript autoimports
 Plug 'Quramy/tsuquyomi'
@@ -233,17 +233,45 @@ Plug 'Dimercel/todo-vim'
 Plug 'xolox/vim-colorscheme-switcher'
 Plug 'xolox/vim-misc'
 
+" SQL Utilities
+Plug 'jezcope/vim-align'
+Plug 'vim-scripts/SQLUtilities'
+
+" Google Formatter
+Plug 'google/vim-maktaba'
+Plug 'google/vim-codefmt'
+Plug 'google/vim-glaive'
+
 call plug#end()
 
 " }}}
 " General: Indentation (tabs, spaces, width, etc)------------- {{{
 
-augroup indentation_sr
-  autocmd!
-  autocmd Filetype * setlocal expandtab shiftwidth=2 softtabstop=2 tabstop=8
-  autocmd Filetype python setlocal shiftwidth=4 softtabstop=4 tabstop=8
-  autocmd Filetype yaml setlocal indentkeys-=<:>
-  autocmd Filetype make setlocal tabstop=4 softtabstop=0 shiftwidth=4 noexpandtab
+augroup autoformat_settings
+  autocmd FileType bzl AutoFormatBuffer buildifier
+  autocmd FileType c,cpp,proto,javascript AutoFormatBuffer clang-format
+  autocmd FileType dart AutoFormatBuffer dartfmt
+  autocmd FileType go AutoFormatBuffer gofmt
+  autocmd FileType gn AutoFormatBuffer gn
+  autocmd FileType html,css,json AutoFormatBuffer js-beautify
+  autocmd FileType java AutoFormatBuffer google-java-format
+  " autocmd FileType python AutoFormatBuffer yapf
+  autocmd FileType python AutoFormatBuffer autopep8
+augroup END
+
+" }}}
+" General: AutoFormatter------------- {{{
+
+augroup autoformat_settings
+  autocmd FileType bzl AutoFormatBuffer buildifier
+  autocmd FileType c,cpp,proto,javascript AutoFormatBuffer clang-format
+  autocmd FileType dart AutoFormatBuffer dartfmt
+  autocmd FileType go AutoFormatBuffer gofmt
+  autocmd FileType gn AutoFormatBuffer gn
+  autocmd FileType html,css,json AutoFormatBuffer js-beautify
+  autocmd FileType java AutoFormatBuffer google-java-format
+  " autocmd FileType python AutoFormatBuffer yapf
+  autocmd FileType python AutoFormatBuffer autopep8
 augroup END
 
 " }}}
@@ -412,6 +440,9 @@ nnoremap <silent> <space>t :TODOToggle<CR>
 " ColorSchemeChanger
 nnoremap <silent> <space>n :NextColorScheme<CR>
 nnoremap <silent> <space>p :NextColorScheme<CR>
+
+" Google Formatter
+nnoremap <leader>f :FormatCode<CR>
 
 " }}}
 " General: Cleanup ------------------ {{{
