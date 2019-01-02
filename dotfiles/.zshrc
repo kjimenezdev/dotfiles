@@ -224,7 +224,7 @@ SHELL=/bin/bash
 
 .PHONY: help
 help: ## Prints target and a help message
-  @grep -E '^[a-zA-Z_-]+:.*?## .*\$\$' \$(MAKEFILE_LIST) |  \\
+	@grep -E '^[a-zA-Z_-]+:.*?## .*\$\$' \$(MAKEFILE_LIST) |  \\
                 awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", \$\$1, \$\$2}'
 
 
@@ -232,17 +232,17 @@ help: ## Prints target and a help message
 # Docker
 #######################################################################
 
-.PHONY: docker-build
-docker-build: ## Build Docker image base
-  @docker build -t \$(IMAGE_NAME):base .
+.PHONY: build
+build: ## Build Docker image base
+	@build -t \$(IMAGE_NAME):base .
 
-.PHONY: docker-run
-docker-run:
-  @docker run -p 4000:80 -t \$(IMAGE_NAME):base
+.PHONY: run
+run:
+	@run -p 4000:80 -t \$(IMAGE_NAME):base
 
-.PHONY: docker-clean
-docker-clean: # Removes all docker images built by this Makefile
-  @docker rmi \$(IMAGE_NAME)
+.PHONY: clean
+clean: # Removes all docker images built by this Makefile
+	@docker rmi \$(IMAGE_NAME)
 
 
 #################################################################
@@ -251,16 +251,11 @@ docker-clean: # Removes all docker images built by this Makefile
 
 .PHONY: lint
 lint:  ## Run lint tools
-  @pylint --output-format=colorized main.py
-        @mypy main.py
+	@pylint --output-format=colorized *.py
 
 .PHONY: install
 install: ## Install the application dependencies
-  @poetry install
-
-.PHONY: run
-run: ## Run the project
-  @python main.py
+	@poetry install
 
 EOL
 }
