@@ -242,6 +242,15 @@ Plug 'google/vim-maktaba'
 Plug 'google/vim-codefmt'
 Plug 'google/vim-glaive'
 
+" Vim Searchindex
+Plug 'google/vim-searchindex'
+
+" RST syntax
+Plug 'gu-fan/riv.vim'
+
+" RST previewer
+Plug 'gu-fan/InstantRst'
+
 call plug#end()
 
 " }}}
@@ -424,8 +433,9 @@ nnoremap <leader>po :PlantumlOpen<CR>
 " Autopep8 indentation
 nnoremap <leader>p :Autopep8<CR>
 
-" ALEDisable
+" ALE
 nnoremap <leader>d :ALEDisable<CR>
+nnoremap <leader>a :ALEEnable<CR>
 
 " IndentLines: toggle if indent lines is visible
 nnoremap <silent> <leader>i :IndentLinesToggle<CR>
@@ -442,7 +452,11 @@ nnoremap <silent> <space>n :NextColorScheme<CR>
 nnoremap <silent> <space>p :NextColorScheme<CR>
 
 " Google Formatter
-nnoremap <leader>f :FormatCode<CR>
+nnoremap <leader>z FormatCode<CR>
+
+" HTML Folding
+nnoremap <silent> <leader>z zfit<CR>
+nnoremap <silent> <leader>t zfat<CR>
 
 " }}}
 " General: Cleanup ------------------ {{{

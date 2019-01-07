@@ -582,10 +582,25 @@ Distributed under the XYZ license. See ``LICENSE`` for more information.
 EOL
 }
 
+
+function copychar() {
+  if [ $# -ne 1 ]; then
+    echo "copychar <char>"
+    return 1
+  fi
+  echo $1 | pbcopy
+}
+
+# SymLink to a .pylintrc file
+function pylintrc() {
+  cp $HOME/.pylintrc $PWD
+}
+
 # Necessary files for project start
 function base-proj() {
   pynew
 }
+
 # Print out the Github-recommended gitignore
 export GITIGNORE_DIR=$HOME/src/lib/gitignore
 function gitignore() {
@@ -906,6 +921,9 @@ alias posear="poetry search"
 alias psqlu="psql -U postgres -W"
 alias pgcliu="pgcli -U postgres -W"
 
+
+# Helpful
+alias b="bpython"
 # }}}
 # Plugins --- {{{
 
