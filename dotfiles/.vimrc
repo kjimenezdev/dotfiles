@@ -251,6 +251,9 @@ Plug 'gu-fan/riv.vim'
 " RST previewer
 Plug 'gu-fan/InstantRst'
 
+" GBlame
+Plug 'tpope/vim-fugitive'
+
 call plug#end()
 
 " }}}

@@ -879,8 +879,9 @@ alias gma='git add --all && git commit --verbose'
 alias gp='git remote prune origin'
 alias gd='git diff'
 alias gcim='git commit -m'
-alias gcheckout='git checkout'
-alias gremote='git remote'
+alias gco='git checkout'
+alias gopen='git open'
+alias grem='git remote'
 alias fetch='git fetch'
 alias stash='git stash'
 
@@ -921,9 +922,10 @@ alias posear="poetry search"
 alias psqlu="psql -U postgres -W"
 alias pgcliu="pgcli -U postgres -W"
 
-
 # Helpful
 alias b="bpython"
+alias kipy="pip install -i $PYPI_SERVER"
+
 # }}}
 # Plugins --- {{{
 
