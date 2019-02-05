@@ -254,6 +254,15 @@ Plug 'gu-fan/InstantRst'
 " GBlame
 Plug 'tpope/vim-fugitive'
 
+" Advanced Sorters
+Plug 'vim-scripts/AdvancedSorters'
+
+" Vim Filetype Formatter
+Plug 'pappasam/vim-filetype-formatter'
+
+" Vim Python folding settings
+Plug 'tmhedberg/SimpylFold'
+
 call plug#end()
 
 " }}}
@@ -261,7 +270,7 @@ call plug#end()
 
 augroup autoformat_settings
   autocmd FileType bzl AutoFormatBuffer buildifier
-  autocmd FileType c,cpp,proto,javascript AutoFormatBuffer clang-format
+  autocmd FileType c,cpp,proto AutoFormatBuffer clang-format
   autocmd FileType dart AutoFormatBuffer dartfmt
   autocmd FileType go AutoFormatBuffer gofmt
   autocmd FileType gn AutoFormatBuffer gn
@@ -276,7 +285,7 @@ augroup END
 
 augroup autoformat_settings
   autocmd FileType bzl AutoFormatBuffer buildifier
-  autocmd FileType c,cpp,proto,javascript AutoFormatBuffer clang-format
+  autocmd FileType c,cpp,proto AutoFormatBuffer clang-format
   autocmd FileType dart AutoFormatBuffer dartfmt
   autocmd FileType go AutoFormatBuffer gofmt
   autocmd FileType gn AutoFormatBuffer gn
@@ -342,6 +351,14 @@ let g:PaperColor_Theme_Options['theme'] = {
       \       'transparent_background': 1
       \     }
       \ }
+let g:PaperColor_Theme_Options.theme['default.dark'] = {}
+let g:PaperColor_Theme_Options.theme['default.dark'].override = {
+      \ 'folded_fg' : ['#d787ff', '10'],
+      \ 'folded_bg' : ['#5f005f', '239'],
+      \ 'visual_fg' : ['#000000', '0'],
+      \ 'visual_bg' : ['#8787af', '6'],
+      \ }
+
 let g:PaperColor_Theme_Options['language'] = {
       \     'python': {
       \       'highlight_builtins' : 1
@@ -593,6 +610,13 @@ augroup javascript_complete
   autocmd FileType javascript nnoremap <buffer> <leader>gd :TernDoc<CR>
 augroup END
 
+" ~/.vimrc or ~/.config/nvim/init.vim
+let g:vim_filetype_formatter_commands = {
+      \ 'python': 'black -q -',
+      \ 'rust': 'rustfmt',
+      \ 'terraform': 'terraform fmt -'
+      \}
+
 
 "  }}}
 " General: Filetype specification ------------ {{{
@@ -603,6 +627,7 @@ augroup filetype_recognition
   autocmd BufNewFile,BufRead,BufEnter *.config set filetype=yaml
   autocmd BufNewFile,BufRead,BufEnter *.bowerrc,*.babelrc,*.eslintrc,*.slack-term
         \ set filetype=json
+  autocmd BufNewFile,BufRead,BufEnter *.ipynb set filetype=json
   autocmd BufNewFile,BufRead,BufEnter *.handlebars set filetype=html
   autocmd BufNewFile,BufRead,BufEnter *.m,*.oct set filetype=octave
   autocmd BufNewFile,BufRead,BufEnter *.jsx set filetype=javascript.jsx
