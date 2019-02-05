@@ -880,6 +880,7 @@ alias gp='git remote prune origin'
 alias gd='git diff'
 alias gcim='git commit -m'
 alias gco='git checkout'
+alias gcob='git checkout -b'
 alias gopen='git open'
 alias grem='git remote'
 alias fetch='git fetch'
@@ -917,6 +918,7 @@ alias poinit="poetry init"
 alias porm="poetry remove"
 alias poupd="poetry update"
 alias posear="poetry search"
+alias porins="rm poetry.lock && poetry install"
 
 # Postgres
 alias psqlu="psql -U postgres -W"
@@ -925,6 +927,8 @@ alias pgcliu="pgcli -U postgres -W"
 # Helpful
 alias b="bpython"
 alias kipy="pip install -i $PYPI_SERVER"
+alias sa='alias | grep'
+alias rmenv="rm -rf .venv/"
 
 # }}}
 # Plugins --- {{{
