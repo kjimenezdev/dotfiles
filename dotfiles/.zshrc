@@ -300,6 +300,11 @@ function pull() {
   git pull origin "$current_branch"
 }
 
+# GIT: Remove all feature branches
+function rmbranches() {
+ for p in $(git --no-pager branch | grep ch); do git branch -D $p; done
+}
+
 # Creates a simple new flask proyect
 function flasknew(){
   if [ $# -ne 1 ]; then
